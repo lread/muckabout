@@ -1,1 +1,2 @@
-{:malformed-edn
+{:cljdoc.doc/tree
+ [["Please Readme" {:file "README.adoc"}]]}
