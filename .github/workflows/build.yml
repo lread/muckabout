@@ -1,0 +1,53 @@
+name: Build
+
+jobs:
+  build:
+    environment: release
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Setup Git User so that we can later make changes
+      uses: fregante/setup-git-user@v1
+
+    - name: Clojure deps cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.m2/repository
+          ~/.gitlibs
+        key: $${ runner.os }}-cljdeps-release-${{ hashFiles('deps.edn') }}
+        restore-keys: $${ runner.os }}-cljdeps-release-
+
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: Install Clojure
+      run: curl -s https://download.clojure.org/install/linux-install-1.10.3.986.sh | sudo bash
+
+    - name: Tools Versions
+      run: |
+        echo "java -version"
+        java -version
+        echo "clojure -Sdescribe"
+        clojure -Sdescribe
+
+    - name: Jar
+      run: clojure -T:build jar
+
+    - name: Tag and push
+      run: clojure -T:build tag
+
+    - name: Deploy
+      env:
+        CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
+        CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
+      run: clojure -T:build deploy
