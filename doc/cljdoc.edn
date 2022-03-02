@@ -1,2 +1,3 @@
 {:cljdoc.doc/tree
- [["Please Readme" {:file "README.md"}]]}
+ [["Please Readme" {:file "README.md"}]]
+ :cljdoc/languages ["cljf"]}
