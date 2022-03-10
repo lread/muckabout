@@ -1,4 +1,0 @@
-{:cljdoc.doc/tree
- [["Please Readme" {:file "README.md"}]
-  ["An adoc" {:file "doc/adoc.adoc"}]]
- :cljdoc/languages ["cljs" "clj"]}
