@@ -46,10 +46,10 @@ jobs:
   win_build:
     executor:
       name: win/default
+      shell: cmd.exe
     steps:
       - run:
           name: Install Leiningen
-          shell: cmd.exe
           command: |
             powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat', 'lein.bat')"
             lein self-install
@@ -61,11 +61,9 @@ jobs:
             lein --version
             node --version
 
-
-
 workflows:
   run-jobs:
     jobs:
-      - ubuntu_build
-      - macos_build
+      #- ubuntu_build
+      #- macos_build
       - win_build
