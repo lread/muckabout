@@ -48,18 +48,12 @@ jobs:
       name: win/default
       shell: cmd.exe
     steps:
-      - run:
-          name: Install Leiningen
-          command: |
-            powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat', 'lein.bat')"
-            lein self-install
+      - run: powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat', 'lein.bat')"
+      - run: lein self-install
       - checkout
-      - run:
-          name: Tools Versions
-          command: |
-            java -version
-            lein --version
-            node --version
+      - run: java -version
+      - run: lein --version
+      - run: node --version
 
 workflows:
   run-jobs:
