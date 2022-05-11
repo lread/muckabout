@@ -47,8 +47,20 @@ jobs:
     executor:
       name: win/default
     steps:
+      - run:
+          name: Install Leiningen
+          command: |
+            powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat', 'lein.bat')"
+            call lein self-install
       - checkout
-      - run: Write-Host 'Hello, Windows'
+      - run:
+          name: Tools Versions
+          command: |
+            java -version
+            lein --version
+            node --version
+
+
 
 workflows:
   run-jobs:
