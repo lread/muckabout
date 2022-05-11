@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Tools Versions
           command: |
-            clojure --version
+            brew --version
             node --version
             google-chrome --version
             chromedriver --version
