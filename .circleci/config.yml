@@ -63,6 +63,8 @@ jobs:
       - run:
           name: Install Web Browsers and Drivers
           command: |
+            choco install firefox
+            #choco install googlechrome
             choco install selenium-gecko-driver
       - checkout
       - run:
@@ -71,6 +73,10 @@ jobs:
       - run: bb --version
       - run: java -version
       - run: node --version
+      - run:
+          name: Firefox version
+          command: |
+            'C:\Program Files\Mozilla Firefox\firefox.exe' -v | Write-Output
       - run: geckodriver --version
 
 workflows:
