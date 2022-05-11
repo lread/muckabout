@@ -49,11 +49,15 @@ jobs:
       shell: cmd.exe
     steps:
       - run:
+          name: What's here?
+          shell: powershell.exe
+          command: tree $HOME
+      - run:
           name: Install Babashka
           shell: powershell.exe
           command: |
-            (New-Object System.Net.WebClient).DownloadFile('https://github.com/babashka/babashka/releases/download/v0.8.2/babashka-0.8.2-windows-amd64.zip',"$pwd\bb.zip")
-            Expand-Archive $pwd\bb.zip
+            (New-Object System.Net.WebClient).DownloadFile('https://github.com/babashka/babashka/releases/download/v0.8.2/babashka-0.8.2-windows-amd64.zip',"bb.zip")
+            Expand-Archive $HOME\bb.zip -DestinationPath $HOME
       - checkout
       - run: bb --version
       - run: java -version
