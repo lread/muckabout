@@ -24,11 +24,15 @@ jobs:
       xcode: "12.5.1"
     steps:
       - browser-tools/install-browser-tools
+      - run:
+          name: Install Leiningen
+          command: brew install leiningen
       - checkout
       - run:
           name: Tools Versions
           command: |
-            brew --version
+            java -version
+            lein --version
             node --version
             google-chrome --version
             chromedriver --version
