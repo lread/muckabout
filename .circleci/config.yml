@@ -60,7 +60,7 @@ jobs:
           command: |
             mkdir -p c:\tools\babashka
             [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable('Path', 'Machine') + ";c:\tools\babashka", "Machine")
-            (New-Object System.Net.WebClient).DownloadFile('https://github.com/babashka/babashka/releases/download/v0.8.2/babashka-0.8.2-windows-amd64.zip','c:tools\babashka\bb.zip')
+            (New-Object System.Net.WebClient).DownloadFile('https://github.com/babashka/babashka/releases/download/v0.8.2/babashka-0.8.2-windows-amd64.zip','c:\tools\babashka\bb.zip')
             Expand-Archive 'c:\tools\babashka\bb.zip' -DestinationPath 'c:\tools\babashka'
       - checkout
       - run: bb --version
