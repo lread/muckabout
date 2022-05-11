@@ -51,7 +51,7 @@ jobs:
           name: Install Leiningen
           command: |
             powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat', 'lein.bat')"
-            lein self-install
+            lein.bat self-install
       - checkout
       - run:
           name: Tools Versions
