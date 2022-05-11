@@ -48,12 +48,15 @@ jobs:
       name: win/default
       shell: cmd.exe
     steps:
-      - run: powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat', 'lein.bat')"
-      - run: ls -l
-      - run: .\lein.bat self-install
+      - run:
+          name: Install Babashka
+          shell: powershell.exe
+          command: |
+            (New-Object System.Net.WebClient).DownloadFile('https://github.com/babashka/babashka/releases/download/v0.8.2/babashka-0.8.2-windows-amd64.zip',"$pwd\bb.zip")
+            Expand-Archive $pwd\bb.zip
       - checkout
+      - run: bb --version
       - run: java -version
-      - run: lein --version
       - run: node --version
 
 workflows:
