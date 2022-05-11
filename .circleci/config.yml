@@ -49,7 +49,7 @@ jobs:
       shell: cmd.exe
     steps:
       - run: powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat', 'lein.bat')"
-      - run: lein self-install
+      - run: call lein self-install
       - checkout
       - run: java -version
       - run: lein --version
