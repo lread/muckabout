@@ -60,6 +60,10 @@ jobs:
             [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable('Path', 'Machine') + ";c:\tools\babashka", "Machine")
             (New-Object System.Net.WebClient).DownloadFile('https://github.com/babashka/babashka/releases/download/v0.8.2/babashka-0.8.2-windows-amd64.zip','c:\tools\babashka\bb.zip')
             Expand-Archive 'c:\tools\babashka\bb.zip' -DestinationPath 'c:\tools\babashka'
+      - run:
+          name: Install Web Browsers and Drivers
+          command: |
+            choco install selenium-gecko-driver
       - checkout
       - run:
           name: What da path now?
@@ -67,6 +71,7 @@ jobs:
       - run: bb --version
       - run: java -version
       - run: node --version
+      - run: geckodriver --version
 
 workflows:
   run-jobs:
