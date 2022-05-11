@@ -46,23 +46,24 @@ jobs:
   win_build:
     executor:
       name: win/default
-      shell: cmd.exe
+      shell: powershell.exe
     steps:
       - run:
           name: What's here?
-          shell: powershell.exe
           command: |
             tree $HOME
             echo $Env:Path
       - run:
           name: Install Babashka
-          shell: powershell.exe
           command: |
             mkdir -p c:\tools\babashka
             [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable('Path', 'Machine') + ";c:\tools\babashka", "Machine")
             (New-Object System.Net.WebClient).DownloadFile('https://github.com/babashka/babashka/releases/download/v0.8.2/babashka-0.8.2-windows-amd64.zip','c:\tools\babashka\bb.zip')
             Expand-Archive 'c:\tools\babashka\bb.zip' -DestinationPath 'c:\tools\babashka'
       - checkout
+      - run:
+          name: What da path now?
+          command: echo $Env:Path
       - run: bb --version
       - run: java -version
       - run: node --version
