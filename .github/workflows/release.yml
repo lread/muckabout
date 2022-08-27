@@ -1,0 +1,17 @@
+name: release
+on:
+  push:
+    tags:
+      - 'Release-*'
+
+jobs:
+  test:
+    uses: ./github/workflows/tests.yml
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [tests]
+
+    steps:
+    - name: Pretend we are releasing
+      run: echo Releasing

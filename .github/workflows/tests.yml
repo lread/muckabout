@@ -1,0 +1,14 @@
+name: tests
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Pretend we are testing
+      run: cat README.md
