@@ -11,4 +11,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Pretend we are testing
-      run: cat README.md
+      run: echo testing123
