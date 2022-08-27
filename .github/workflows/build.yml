@@ -1,0 +1,24 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Pretend we are testing
+      run: echo testing
+
+  deploy:
+    if: ${{ startsWith(github.ref, 'ref/tags/Release-') }}
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Pretend we are releasing
+      run: echo Releasing
