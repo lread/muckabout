@@ -1,6 +1,6 @@
 name: release
 on:
-  workflow_dipatch:
+  workflow_dispatch:
 
 jobs:
   test:
