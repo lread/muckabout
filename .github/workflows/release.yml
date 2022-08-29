@@ -8,7 +8,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [all-tests]
+    needs: [test]
 
     steps:
     - name: Pretend we are releasing
