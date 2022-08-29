@@ -7,8 +7,17 @@ on:
   pull_request:
 
 jobs:
-  test:
+  test1:
     runs-on: ubuntu-latest
     steps:
     - name: Pretend we are testing
       run: echo testing123
+
+  test2:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Present we are testing2
+      run: echo testing456
+
+  all-tests:
+    needs: [test1, test2]
