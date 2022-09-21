@@ -2,7 +2,7 @@
 
 No changes
 
-[[v1.0.0]]
+[[version-1.0.0]]
 == v1.0.0 maybe some text here 
 
 Some changes here
