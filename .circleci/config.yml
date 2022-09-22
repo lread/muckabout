@@ -40,7 +40,7 @@ aliases:
 
 workflows:
   version: 2
-  build-deploy:
+  build_deploy:
     jobs:
       - setup
       - test:
@@ -53,7 +53,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /Release-.*/
+              only: /^Release-.*/
 
 jobs:
   setup:
