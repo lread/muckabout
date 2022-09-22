@@ -1,87 +1,129 @@
 version: 2.1
 
 orbs:
-  browser-tools: circleci/browser-tools@1.3.0
-  win: circleci/windows@4.1.1
+  gh: circleci/github-cli@2.1.0
 
-jobs:
-  ubuntu_build:
-    docker:
-      - image: cimg/clojure:1.11.1-browsers
-    steps:
-      - browser-tools/install-browser-tools
-      - checkout
-      - run:
-          name: Tools Versions
-          command: |
-            java -version
-            clojure --version
-            lein --version
-            node --version
-            google-chrome --version
-            chromedriver --version
-            firefox --version
-            geckodriver --version
+aliases:
+  - &docker:
+    - image: cimg/clojure:1.11.1-openjdk-8.0
 
-  macos_build:
-    macos:
-      xcode: "12.5.1"
-    steps:
-      - browser-tools/install-browser-tools
-      - run:
-          name: Install Leiningen
-          command: brew install leiningen
-      - checkout
-      - run:
-          name: Tools Versions
-          command: |
-            java -version
-            lein --version
-            node --version
-            google-chrome --version
-            chromedriver --version
-            firefox --version
-            geckodriver --version
+  - &environment:
+    LEIN_ROOT: "true"
+    JVM_OPTS: -Xmx3200m
 
-  win_build:
-    executor:
-      name: win/default
-      shell: powershell.exe
-    steps:
-      - run:
-          name: What's here?
-          command: |
-            tree $HOME
-            echo $Env:Path
-      - run:
-          name: Install Babashka
-          command: |
-            mkdir -p c:\tools\babashka
-            [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable('Path', 'Machine') + ";c:\tools\babashka", "Machine")
-            (New-Object System.Net.WebClient).DownloadFile('https://github.com/babashka/babashka/releases/download/v0.8.2/babashka-0.8.2-windows-amd64.zip','c:\tools\babashka\bb.zip')
-            Expand-Archive 'c:\tools\babashka\bb.zip' -DestinationPath 'c:\tools\babashka'
-      - run:
-          name: Install Web Browsers and Drivers
-          command: |
-            choco install firefox
-            #choco install googlechrome
-            choco install selenium-gecko-driver
-      - checkout
-      - run:
-          name: What da path now?
-          command: echo $Env:Path
-      - run: bb --version
-      - run: java -version
-      - run: node --version
-      - run:
-          name: Firefox version
-          command: |
-            'C:\Program Files\Mozilla Firefox\firefox.exe' -v | Write-Output
-      - run: geckodriver --version
+  - &restore_clojure_cache
+    restore_cache:
+      name: Restore clojure cache
+      keys:
+        - v1-dependencies-{{ checksum "project.clj" }}
+        - v1-dependencies-
+
+  - &clojure_deps_install
+    run:
+      name: "Bring down Clojure deps"
+      command: lein deps
+
+  - &report-tools-versions
+    run:
+      name: "Tools versions"
+      command: |
+        java -version
+        clojure --version
+        bb --version
+
+  - &save_clojure_cache
+    save_cache:
+      name: Save clojure cache
+      key: v1-dependencies-{{ checksum "project.clj" }}
+      paths:
+        - ~/.m2
 
 workflows:
-  run-jobs:
+  build-deploy:
     jobs:
-      #- ubuntu_build
-      #- macos_build
-      - win_build
+      - setup
+      - build:
+          requires:
+            - setup
+          filters:
+            tags:
+              only: /.*/
+
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /Release-.*/
+          context:
+            - CLOJARS_DEPLOY
+
+jobs:
+  setup:
+    docker: *docker
+    environment: *environment
+    steps:
+      - checkout
+      - run:
+          name: Nodejs Version
+          command: node --version
+      - *restore_clojure_cache
+      - *report_tools_versions
+      - *clojure_deps_install
+      - *save_clojure_cache
+
+  build:
+    docker: *docker
+    environment: *environment
+    steps:
+      - checkout
+      - *restore_clojure_cache
+      - *report_tools_versions
+      - run:
+          name: Ensure No Reflection Warnings
+          command: "! lein check 2>&1 | grep 'Reflection warning'"
+      - run:
+          name: Run tests
+          command: lein do clean, test
+
+  deploy:
+    docker: *docker
+    environment: *environment
+    steps:
+      - checkout
+      - *restore_clojure_cache
+      - *report_tools_versions
+      - gh/setup
+
+      - run:
+          name: Install deployment-script
+          command: |
+            curl -s https://raw.githubusercontent.com/clj-commons/infra/main/deployment/circle-maybe-deploy.bb -o circle-maybe-deploy.bb
+            chmod a+x circle-maybe-deploy.bb
+
+      - run:
+          name: Setup GPG signing key
+          command: |
+            GNUPGHOME="$HOME/.gnupg"
+            export GNUPGHOME
+            mkdir -p "$GNUPGHOME"
+            chmod 0700 "$GNUPGHOME"
+              echo "$GPG_KEY" \
+               | base64 --decode --ignore-garbage \
+               | gpg --batch --allow-secret-key-import --import
+               gpg --keyid-format LONG --list-secret-keys
+
+      - run:
+          name: Deploy
+          command: |
+            GPG_TTY=$(tty)
+            export GPG_TTY
+            echo $GPG_TTY
+            ./circle-maybe-deploy.bb lein deploy clojars
+
+      - run:
+          name: GitHub Release
+          command: |
+            ./circle-maybe-deploy.bb bb -ci-github-release

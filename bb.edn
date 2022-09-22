@@ -1,0 +1,21 @@
+{:paths ["script"]
+ :deps {lread/status-line {:git/url "https://github.com/lread/status-line.git"
+                           :sha "35ed39645038e81b42cb15ed6753b8462e60a06d"}}
+ :tasks {;; setup
+         :requires ([clojure.string :as string]
+                    [lread.status-line :as status])
+         :enter (let [{:keys [name]} (current-task)] (status/line :head "TASK %s %s" name (string/join " " *command-line-args*)))
+         :leave (let [{:keys [name]} (current-task)] (status/line :detail "\nTASK %s done." name))
+         ;; tasks
+         publish {:doc "Publish a release"
+                  :task publish/-main}
+         ;; TODO: some attributes are shared with publish
+         -ci-github-release {:doc "(run by circleci) Create a github release"
+                             ;; PROJECT_VERSION comes from slipset's deploy maybe wrapper...
+                             :task (let [version (System/getenv "PROJECT_VERSION")
+                                         tag (System/getenv "CIRCLE_TAG")
+                                         named-version (str "v" version)]
+                                    (shell "gh release create"
+                                           tag
+                                           "--title" named-version
+                                           "--notes" (format "[change log](/changelog.adoc#%s)" named-version)))}}}
