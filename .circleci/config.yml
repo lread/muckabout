@@ -39,23 +39,21 @@ aliases:
         - ~/.m2
 
 workflows:
+  version: 2
   build-deploy:
     jobs:
       - setup
       - test:
           requires:
             - setup
-          filters:
-            tags:
-              only: /.*/
       - deploy:
           requires:
             - test
           filters:
-            tags:
-              only: /Release-.*/
             branches:
               ignore: /.*/
+            tags:
+              only: /Release-.*/
 
 jobs:
   setup:
