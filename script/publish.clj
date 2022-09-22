@@ -135,7 +135,7 @@
                   ;; followed by link to commit log
                   (when last-release-tag
                     (str
-                      "\nhttps://github.com/" github-coords "/compare/"
+                      "https://github.com/" github-coords "/compare/"
                       last-release-tag
                       "\\\\..."  ;; single backslash is escape for AsciiDoc
                       release-tag
@@ -177,7 +177,7 @@
    (if (not passed?)
       (status/die 1 "Release checks failed")
       (do
-        (status/line :head "Releasing")
+        (status/line :head "Calculating versions")
         (bump-version!)
         (let [last-release-tag (last-release-tag)
               version (version-string)
@@ -185,13 +185,19 @@
           (status/line :detail "Release version: %s" version)
           (status/line :detail "Release tag: %s" release-tag)
           (status/line :detail "Last release tag: %s" last-release-tag)
+          (status/line :head "Updating docs")
           (update-readme! version)
           (update-changelog! version release-tag last-release-tag)
+          (status/line :head "Committing and Pushing")
           (commit-changes! version)
           (tag! release-tag)
           (push!)
           (push-tag! release-tag)
-          (status/line :detail "\nDone. The pushed tag will trigger remaining work up on CI."))))))
+          (status/line :detail "\nLocal work done.")
+          (status/line :head "Remote work")
+          (status/line :detail "The remainging work will be triggered by the release tag on CI:")
+          (status/line :detail "- Publish a signed release jar to clojars")
+          (status/line :detail "- Creating a GitHub release"))))))
 
 ;; default action when executing file directly
 (when (= *file* (System/getProperty "babashka.file"))
