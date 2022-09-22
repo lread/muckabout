@@ -190,7 +190,7 @@
           (update-changelog! version release-tag last-release-tag)
           (status/line :head "Committing changes")
           (commit-changes! version)
-          (status/line :head "Tagging * pushing")
+          (status/line :head "Tagging & pushing")
           (tag! release-tag)
           (push!)
           (push-tag! release-tag)
