@@ -11,10 +11,13 @@
 (def readme-fname "README.adoc")
 
 (defn- last-release-tag []
-  (->  (t/shell {:out :string}
-                (format "git describe --abbrev=0 --match %s[0-9]*" version-tag-prefix))
-       :out
-       string/trim))
+  (let [pattern (re-pattern (str "refs/tags/(" version-tag-prefix "\\d+\\..*)"))]
+    (->>  (t/shell {:out :string}
+                   "git ls-remote --tags --refs --sort='-version:refname'")
+          :out
+          string/split-lines
+          (keep #(last (re-find pattern %)))
+          first)))
 
 (defn main-branch? []
   (let [current-branch (->> (t/shell {:out :string} "git rev-parse --abbrev-ref HEAD")
@@ -150,15 +153,12 @@
 
 ;; TODO: Do we want/need an annotated tag?
 (defn tag! [tag]
-  (status/line :detail "Tagging git repo with: %s" tag)
   (t/shell "git tag" tag))
 
 (defn push! []
-  (status/line :detail "Pushing git changes")
   (t/shell "git push"))
 
 (defn push-tag! [tag]
-  (status/line :detail "Pushing git tag: %s" tag)
   (t/shell "git push origin" tag))
 
 (defn -main [& _args]
@@ -188,8 +188,9 @@
           (status/line :head "Updating docs")
           (update-readme! version)
           (update-changelog! version release-tag last-release-tag)
-          (status/line :head "Committing and Pushing")
+          (status/line :head "Committing changes")
           (commit-changes! version)
+          (status/line :head "Tagging * pushing")
           (tag! release-tag)
           (push!)
           (push-tag! release-tag)
