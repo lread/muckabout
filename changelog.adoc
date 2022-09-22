@@ -2,7 +2,12 @@
 
 == Unreleased
 
+== v1.1.15 - 2022-09-22 [[v1.1.15]]
+
 * yaml
+
+
+https://github.com/lread/muckabout/compare/Release-1.0.8\...Release-1.1.15[commit log]
 
 == v1.1.14 - 2022-09-22 [[v1.1.14]]
 
