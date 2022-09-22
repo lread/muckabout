@@ -1,8 +1,12 @@
 = Changelog
 
-== Unreleased [breaking]
+== Unreleased
+
+== v1.1.19 [breaking] - 2022-09-22 [[v1.1.19]]
 
 * breaking typo
+
+https://github.com/lread/muckabout/compare/Release-1.1.18\...Release-1.1.19[commit log]
 
 == v1.1.18 - 2022-09-22 [[v1.1.18]]
 
