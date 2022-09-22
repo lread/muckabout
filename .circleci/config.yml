@@ -42,14 +42,8 @@ workflows:
   version: 2
   build_deploy:
     jobs:
-      - setup:
-          filters:  # required since `deploy` has tag filters AND requires `build`
-            tags:
-              only: /.*/
       - test:
-          requires:
-            - setup
-          filters:  # required since `deploy` has tag filters AND requires `build`
+          filters:  # required since `deploy` has tag filters AND requires `test`
             tags:
               only: /.*/
       - deploy:
@@ -62,22 +56,13 @@ workflows:
               only: /^Release-.*/
 
 jobs:
-  setup:
-    docker: *docker
-    environment: *environment
-    steps:
-      - checkout
-      - *restore_clojure_cache
-      - *report_tools_versions
-      - *clojure_deps_install
-      - *save_clojure_cache
-
   test:
     docker: *docker
     environment: *environment
     steps:
       - checkout
       - *restore_clojure_cache
+      - *clojure_deps_install
       - *report_tools_versions
       - run:
           name: Ensure No Reflection Warnings
@@ -85,6 +70,7 @@ jobs:
       - run:
           name: Run tests
           command: lein do clean, test
+      - *save_clojure_cache
 
   deploy:
     docker: *docker
