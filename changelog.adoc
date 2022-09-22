@@ -1,6 +1,8 @@
 = Changelog
 
-== Unreleased
+== Unreleased [minor breaking]
+
+* more breaks
 
 == v1.1.19 [breaking] - 2022-09-22 [[v1.1.19]]
 
