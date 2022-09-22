@@ -143,8 +143,10 @@
                   ;; followed by next section indicator
                   "$3")))
 
-(defn commit-changes! []
-  (status/line :detail "Committing changes to git repo"))
+(defn commit-changes! [version]
+  (status/line :detail "Committing changes to git repo")
+  (t/shell "git add version.edn changelog.adoc readme.adoc")
+  (t/shell "git commit -m" (str "Release: updates for version " version) ))
 
 ;; TODO: Do we want/need an annotated tag?
 (defn tag! [tag]
@@ -185,7 +187,7 @@
           (status/line :detail "Last release tag: %s" last-release-tag)
           (update-readme! version)
           (update-changelog! version release-tag last-release-tag)
-          (commit-changes!)
+          (commit-changes! version)
           (tag! release-tag)
           (push!)
           (push-tag! release-tag)
