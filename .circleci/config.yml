@@ -4,10 +4,10 @@ orbs:
   gh: circleci/github-cli@2.1.0
 
 aliases:
-  - &docker:
+  - &docker
     - image: cimg/clojure:1.11.1-openjdk-8.0
 
-  - &environment:
+  - &environment
     LEIN_ROOT: "true"
     JVM_OPTS: -Xmx3200m
 
@@ -42,23 +42,20 @@ workflows:
   build-deploy:
     jobs:
       - setup
-      - build:
+      - test:
           requires:
             - setup
           filters:
             tags:
               only: /.*/
-
       - deploy:
           requires:
-            - build
+            - test
           filters:
             branches:
               ignore: /.*/
             tags:
               only: /Release-.*/
-          context:
-            - CLOJARS_DEPLOY
 
 jobs:
   setup:
@@ -66,15 +63,12 @@ jobs:
     environment: *environment
     steps:
       - checkout
-      - run:
-          name: Nodejs Version
-          command: node --version
       - *restore_clojure_cache
       - *report_tools_versions
       - *clojure_deps_install
       - *save_clojure_cache
 
-  build:
+  test:
     docker: *docker
     environment: *environment
     steps:
@@ -96,13 +90,11 @@ jobs:
       - *restore_clojure_cache
       - *report_tools_versions
       - gh/setup
-
       - run:
           name: Install deployment-script
           command: |
             curl -s https://raw.githubusercontent.com/clj-commons/infra/main/deployment/circle-maybe-deploy.bb -o circle-maybe-deploy.bb
             chmod a+x circle-maybe-deploy.bb
-
       - run:
           name: Setup GPG signing key
           command: |
@@ -114,7 +106,6 @@ jobs:
                | base64 --decode --ignore-garbage \
                | gpg --batch --allow-secret-key-import --import
                gpg --keyid-format LONG --list-secret-keys
-
       - run:
           name: Deploy
           command: |
@@ -122,7 +113,6 @@ jobs:
             export GPG_TTY
             echo $GPG_TTY
             ./circle-maybe-deploy.bb lein deploy clojars
-
       - run:
           name: GitHub Release
           command: |
