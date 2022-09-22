@@ -2,7 +2,11 @@
 
 == Unreleased
 
+== v1.1.17 - 2022-09-22 [[v1.1.17]]
+
 * publish script updates
+
+https://github.com/lread/muckabout/compare/Release-1.0.8\...Release-1.1.17[commit log]
 
 == v1.1.16 - 2022-09-22 [[v1.1.16]]
 
