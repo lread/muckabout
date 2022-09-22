@@ -23,7 +23,7 @@ aliases:
       name: "Bring down Clojure deps"
       command: lein deps
 
-  - &report-tools-versions
+  - &report_tools_versions
     run:
       name: "Tools versions"
       command: |
