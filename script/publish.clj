@@ -8,7 +8,7 @@
 (def github-coords "lread/muckabout")
 (def version-tag-prefix "Release-")
 (def changelog-fname "changelog.adoc")
-(def readme-fname "readme.adoc")
+(def readme-fname "README.adoc")
 
 (defn- last-release-tag []
   (->  (t/shell {:out :string}
@@ -145,7 +145,7 @@
 
 (defn commit-changes! [version]
   (status/line :detail "Committing changes to git repo")
-  (t/shell "git add version.edn changelog.adoc readme.adoc")
+  (t/shell "git add version.edn changelog.adoc README.adoc")
   (t/shell "git commit -m" (str "Release: updates for version " version) ))
 
 ;; TODO: Do we want/need an annotated tag?

@@ -52,10 +52,10 @@ workflows:
           requires:
             - test
           filters:
-            branches:
-              ignore: /.*/
             tags:
               only: /Release-.*/
+            branches:
+              ignore: /.*/
 
 jobs:
   setup:
