@@ -1,5 +1,5 @@
 ;; PROJECT_VERSION is set by CI scripting to actual release version
-(defproject clj-commons/clj-yaml (or (System/getenv "PROJECT_VERSION") "0.0.1")
+(defproject com.github.lread/muckabout (or (System/getenv "PROJECT_VERSION") "0.0.1")
   :description "Muckabout"
   :url "https://github.com/lread/muckabout"
   :license {:name "Eclipse Public License - v 1.0"
