@@ -3,3 +3,4 @@
 /.calva
 /.lsp
 /.clj-kondo/.cache
+/.lein-failures
