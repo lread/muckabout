@@ -2,6 +2,8 @@
 
 == Unreleased
 
+* jar signing on
+
 == v1.1.25 - 2022-09-22 [[v1.1.25]]
 
 * jar signing off

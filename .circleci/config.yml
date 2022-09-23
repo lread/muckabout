@@ -92,10 +92,15 @@ jobs:
             export GNUPGHOME
             mkdir -p "$GNUPGHOME"
             chmod 0700 "$GNUPGHOME"
-              echo "$GPG_KEY" \
-               | base64 --decode --ignore-garbage \
-               | gpg --batch --allow-secret-key-import --import
-               gpg --keyid-format LONG --list-secret-keys
+            echo "no-tty" >> "$GNUPGHOME"/gpg.conf
+            echo "batch" >> "$GNUPGHOME"/gpg.conf
+
+            echo "$GPG_KEY" \
+                 | base64 --decode --ignore-garbage \
+                 | gpg --batch --allow-secret-key-import --import
+
+                 gpg --keyid-format LONG --list-secret-keys
+
       - run:
           name: Deploy
           command: |
