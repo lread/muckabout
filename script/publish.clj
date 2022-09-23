@@ -116,6 +116,9 @@
                 #"(?m)^(:lib-version: )(.*)$"
                 (str "$1"version)))
 
+(defn- yyyy-mm-dd-now-utc []
+  (-> (java.time.Instant/now) str (subs 0 10)))
+
 (defn- update-changelog! [version release-tag last-release-tag]
   (status/line :detail "Applying version %s to changelog" version)
   (update-file! changelog-fname
@@ -129,7 +132,7 @@
                  ;; followed by any attributes
                   "$1"
                   ;; followed by datestamp (local time is fine)
-                  (str " - " (java.time.LocalDate/now))
+                  (str " - " (yyyy-mm-dd-now-utc))
                   ;; followed by an AsciiDoc anchor for easy referencing
                   (str " [[v" version  "]]")
                   ;; followed by section content
