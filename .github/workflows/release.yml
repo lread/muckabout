@@ -54,4 +54,4 @@ jobs:
       run: bb -ci-clojars-deploy
 
     - name: Create GitHub Release
-      run: bb -ci-create-github-release
+      run: bb -ci-github-create-release
