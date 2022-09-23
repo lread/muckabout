@@ -10,7 +10,7 @@
   :deploy-repositories [["clojars" {:url "https://repo.clojars.org"
                                     :username :env/clojars_username
                                     :password :env/clojars_password
-                                    :sign-releases true}]]
+                                    :sign-releases false}]]
   :global-vars {*warn-on-reflection* true}
   :source-paths ["src"]
   :java-source-paths ["src"]
