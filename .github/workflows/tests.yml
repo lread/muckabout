@@ -18,9 +18,7 @@ jobs:
       with:
         path: |
           ~/.m2/repository
-          ~/.deps.clj
-          ~/.gitlibs
-        key: cljdeps-${{ hashFiles('deps.edn', 'bb.edn') }}
+        key: cljdeps-${{ hashFiles('project.clj') }}
         restore-keys: cljdeps-
 
     - name: Setup Java
@@ -41,6 +39,9 @@ jobs:
         bb --version
         echo "lein --version"
         lein --version
+
+    - name: Download Clojure Dependencies
+      run: lein deps
 
     - name: Run tests
       run: lein test
