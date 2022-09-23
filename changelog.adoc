@@ -2,7 +2,11 @@
 
 == Unreleased
 
+== v1.1.25 - 2022-09-22 [[v1.1.25]]
+
 * jar signing off
+
+https://github.com/lread/muckabout/compare/Release-1.1.24\...Release-1.1.25[commit log]
 
 == v1.1.24 - 2022-09-22 [[v1.1.24]]
 
