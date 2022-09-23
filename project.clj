@@ -1,4 +1,4 @@
-(defproject com.github.lread/muckabout "0.0.1"
+(defproject com.github.lread/muckabout "1.1.27"
   :description "Muckabout"
   :url "https://github.com/lread/muckabout"
   :license {:name "Eclipse Public License - v 1.0"

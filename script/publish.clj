@@ -3,21 +3,12 @@
             [lread.status-line :as status]
             [clojure.edn :as edn]
             [clojure.string :as string]
-            [rewrite-clj.zip :as z]))
+            [rewrite-clj.zip :as z]
+            [version]))
 
 (def github-coords "lread/muckabout")
-(def version-tag-prefix "Release-")
 (def changelog-fname "changelog.adoc")
 (def readme-fname "README.adoc")
-
-(defn- last-release-tag []
-  (let [pattern (re-pattern (str "refs/tags/(" version-tag-prefix "\\d+\\..*)"))]
-    (->>  (t/shell {:out :string}
-                   "git ls-remote --tags --refs --sort='-version:refname'")
-          :out
-          string/split-lines
-          (keep #(last (re-find pattern %)))
-          first)))
 
 (defn main-branch? []
   (let [current-branch (->> (t/shell {:out :string} "git rev-parse --abbrev-ref HEAD")
@@ -100,8 +91,6 @@
             major minor release (if qualifier
                                   (str "-" qualifier)
                                   ""))))
-(defn release-tag [version]
-  (str version-tag-prefix version))
 
 (defn- update-file! [fname desc match replacement]
   (let [old-content (slurp fname)
@@ -157,7 +146,7 @@
                   "$3")))
 
 (defn commit-changes! [version]
-  (t/shell "git add version.edn changelog.adoc README.adoc")
+  (t/shell "git add version.edn project.clj changelog.adoc README.adoc")
   (t/shell "git commit -m" (str "Release: updates for version " version) ))
 
 (defn tag! [tag version]
@@ -187,9 +176,9 @@
       (do
         (status/line :head "Calculating versions")
         (bump-version!)
-        (let [last-release-tag (last-release-tag)
+        (let [last-release-tag (version/last-release-tag)
               version (version-string)
-              release-tag (release-tag version)]
+              release-tag (version/version->tag version)]
           (status/line :detail "Release version: %s" version)
           (status/line :detail "Release tag: %s" release-tag)
           (status/line :detail "Last release tag: %s" last-release-tag)

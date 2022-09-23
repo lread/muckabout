@@ -23,3 +23,7 @@
 
 (defn ref-version [version]
   (str "v" version))
+
+(comment
+  (tag->version "Release-1.1.27")
+  )

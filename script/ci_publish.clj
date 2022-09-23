@@ -18,7 +18,7 @@
       (if-let [version (version/tag->version ci-tag)]
         {:tag tag
          :ref-version (version/ref-version version)}
-        (status/die 1 "Tag not recognized as version tag %s" tag)))))
+        (status/die 1 "Not recognized as version tag: %s" tag)))))
 
 (defn clojars-deploy []
   (assert-on-ci)
