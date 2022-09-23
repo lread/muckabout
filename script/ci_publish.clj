@@ -15,7 +15,7 @@
   (let [tag (ci-tag)]
     (if (not tag)
       (status/die 1 "CI tag not found")
-      (if-let [version (version/tag->version ci-tag)]
+      (if-let [version (version/tag->version tag)]
         {:tag tag
          :ref-version (version/ref-version version)}
         (status/die 1 "Not recognized as version tag: %s" tag)))))

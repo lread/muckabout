@@ -195,7 +195,7 @@
           (status/line :detail "\nLocal work done.")
           (status/line :head "Remote work")
           (status/line :detail "The remainging work will be triggered by the release tag on CI:")
-          (status/line :detail "- Publish a signed release jar to clojars")
+          (status/line :detail "- Publish a release jar to clojars")
           (status/line :detail "- Creating a GitHub release"))))))
 
 ;; default action when executing file directly
