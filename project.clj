@@ -1,5 +1,4 @@
-;; PROJECT_VERSION is set by CI scripting to actual release version
-(defproject com.github.lread/muckabout (or (System/getenv "PROJECT_VERSION") "0.0.1")
+(defproject com.github.lread/muckabout "0.0.1"
   :description "Muckabout"
   :url "https://github.com/lread/muckabout"
   :license {:name "Eclipse Public License - v 1.0"
@@ -10,7 +9,7 @@
   :deploy-repositories [["clojars" {:url "https://repo.clojars.org"
                                     :username :env/clojars_username
                                     :password :env/clojars_password
-                                    :sign-releases true}]]
+                                    :sign-releases false}]]
   :global-vars {*warn-on-reflection* true}
   :source-paths ["src"]
   :java-source-paths ["src"]

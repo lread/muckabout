@@ -1,0 +1,56 @@
+name: release
+on:
+  push:
+    tags:
+      - 'Release-*'
+
+jobs:
+  test:
+    uses: ./.github/workflows/tests.yml
+
+  deploy:
+    environment: release
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Clojure deps cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.m2/repository
+          ~/.deps.clj
+          ~/.gitlibs
+        key: cljdeps-${{ hashFiles('deps.edn', 'bb.edn') }}
+        restore-keys: cljdeps-
+
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: Install Clojure Tools
+      uses: DeLaGuardo/setup-clojure@9.3
+      with:
+        lein: 'latest'
+        bb: 'latest'
+
+    - name: Tools Versions
+      run: |
+        echo "bb --version"
+        bb --version
+        echo "lein --version"
+        lein --version
+
+    - name: Download Clojure Dependencies
+      run: lein deps
+
+    - name: Deploy to clojars
+      run: bb -ci-clojars-deploy
+
+    - name: Create GitHub Release
+      run: bb -ci-create-github-release

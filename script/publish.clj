@@ -110,6 +110,16 @@
       (status/die 1 "Expected to %s in %s" desc fname)
       (spit fname new-content))))
 
+(defn- update-project-clj! [version]
+  (status/line :detail "Applying version %s to project.clj" version)
+  (spit "project.clj"
+        (-> "project.clj"
+            z/of-file
+            (z/find-value z/next 'defproject)
+            z/right z/right
+            (z/replace version)
+            z/root-string)))
+
 (defn- update-readme! [version]
   (status/line :detail "Applying version %s to readme" version)
   (update-file! readme-fname
@@ -147,13 +157,11 @@
                   "$3")))
 
 (defn commit-changes! [version]
-  (status/line :detail "Committing changes to git repo")
   (t/shell "git add version.edn changelog.adoc README.adoc")
   (t/shell "git commit -m" (str "Release: updates for version " version) ))
 
-;; TODO: Do we want/need an annotated tag?
-(defn tag! [tag]
-  (t/shell "git tag" tag))
+(defn tag! [tag version]
+  (t/shell "git tag" tag "-m" (str "For release version: " version)))
 
 (defn push! []
   (t/shell "git push"))
@@ -186,12 +194,13 @@
           (status/line :detail "Release tag: %s" release-tag)
           (status/line :detail "Last release tag: %s" last-release-tag)
           (status/line :head "Updating docs")
+          (update-project-clj! version)
           (update-readme! version)
           (update-changelog! version release-tag last-release-tag)
           (status/line :head "Committing changes")
           (commit-changes! version)
           (status/line :head "Tagging & pushing")
-          (tag! release-tag)
+          (tag! release-tag version)
           (push!)
           (push-tag! release-tag)
           (status/line :detail "\nLocal work done.")
@@ -203,3 +212,4 @@
 ;; default action when executing file directly
 (when (= *file* (System/getProperty "babashka.file"))
   (apply -main *command-line-args*))
+
