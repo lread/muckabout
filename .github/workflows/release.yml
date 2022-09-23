@@ -22,9 +22,7 @@ jobs:
       with:
         path: |
           ~/.m2/repository
-          ~/.deps.clj
-          ~/.gitlibs
-        key: cljdeps-${{ hashFiles('deps.edn', 'bb.edn') }}
+        key: cljdeps-${{ hashFiles('project.clj') }}
         restore-keys: cljdeps-
 
     - name: Setup Java
@@ -50,6 +48,9 @@ jobs:
       run: lein deps
 
     - name: Deploy to clojars
+      env:
+        CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
+        CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
       run: bb -ci-clojars-deploy
 
     - name: Create GitHub Release
