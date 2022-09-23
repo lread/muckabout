@@ -2,6 +2,8 @@
 
 == Unreleased
 
+* jar signing off
+
 == v1.1.24 - 2022-09-22 [[v1.1.24]]
 
 * project corrections
