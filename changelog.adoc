@@ -2,7 +2,11 @@
 
 == Unreleased
 
+== v1.1.31 - 2022-09-23 [[v1.1.31]]
+
 * changes
+
+https://github.com/lread/muckabout/compare/Release-1.1.30\...Release-1.1.31[commit log]
 
 == v1.1.30 - 2022-09-23 [[v1.1.30]]
 
