@@ -2,6 +2,8 @@
 
 == Unreleased
 
+* fix deploy cmd
+
 == v1.1.36 - 2022-09-24 [[v1.1.36]]
 
 * neil, no you can't tag
