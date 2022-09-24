@@ -9,6 +9,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: ['8', '11']
+
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -27,7 +32,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '11'
+        java-version: ${{ matrix.jdk }}
 
     - name: Install Clojure Tools
       uses: DeLaGuardo/setup-clojure@9.5
