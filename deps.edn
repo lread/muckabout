@@ -8,4 +8,4 @@
           :ns-default build}
   ;; we use babashka/neil for project attributes
   :neil {:project {:version "1.1.37"
-                   :name clj-commons/yaml}}}}
+                   :name com.github.lread/muckabout}}}}
