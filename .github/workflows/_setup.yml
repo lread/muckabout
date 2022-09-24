@@ -1,1 +1,46 @@
-.f
+name: 'shared setup'
+inputs:
+  jdk:
+    description: 'jdk version'
+    required: true
+
+runs:
+  using: 'composite'
+
+  steps:
+    - name: Clojure deps cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.m2/repository
+          ~/.deps.clj
+          ~/.gitlibs
+        key: cljdeps-${{ hashFiles('deps.edn', 'bb.edn') }}
+        restore-keys: cljdeps-
+
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: ${{ inputs.jdk }}
+
+    - name: Install Clojure Tools
+      uses: DeLaGuardo/setup-clojure@9.5
+      with:
+        cli: 'latest'
+        bb: 'latest'
+
+    - name: Tools Versions
+      run: |
+        echo "java -version"
+        java -version
+        echo "bb --version"
+        bb --version
+        echo "clojure --version"
+        clojure --version
+
+    - name: Download Clojure Dependencies
+      run: bb download-deps
+
+    - name: Run tests
+      run: bb test
