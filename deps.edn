@@ -7,5 +7,5 @@
                  io.github.slipset/deps-deploy {:sha "d1fac08888ec8beda0579d3071bb9f804a1d446c"}}
           :ns-default build}
   ;; we use babashka/neil for project attributes
-  :neil {:project {:version "1.1.38"
+  :neil {:project {:version "1.1.39"
                    :name com.github.lread/muckabout}}}}
