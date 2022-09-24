@@ -2,8 +2,12 @@
 
 == Unreleased
 
+== v1.1.44 - 2022-09-24 [[v1.1.44]]
+
 * nope, tag does not trigger if skip ci
 * inform cljdoc of as part of release workflow
+
+https://github.com/lread/muckabout/compare/v1.1.43\...v1.1.44[commit log]
 
 == v1.1.43 - 2022-09-24 [[v1.1.43]]
 
