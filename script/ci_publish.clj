@@ -44,7 +44,7 @@
 (defn- cljdoc-request-build []
   (assert-on-ci)
   (let [{:keys [version]} (analyze-ci-tag)
-        project (-> "deps.edn" slurp edn/read-string :aliases :neil :project name)]
+        project (-> "deps.edn" slurp edn/read-string :aliases :neil :project :name)]
     (status/line :head "Informing cljdoc of %s version %s" project version)
     (assert-on-ci)
     (let [exit-code (->  (t/shell {:continue true}
