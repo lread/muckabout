@@ -2,7 +2,11 @@
 
 == Unreleased
 
+== v1.1.38 - 2022-09-24 [[v1.1.38]]
+
 * project name
+
+https://github.com/lread/muckabout/compare/v1.1.37\...v1.1.38[commit log]
 
 == v1.1.37 - 2022-09-24 [[v1.1.37]]
 
