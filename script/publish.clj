@@ -74,7 +74,7 @@
 (defn bump-version!
   "bump version stored in deps.edn"
   []
-  (t/shell "bb neil version patch"))
+  (t/shell "bb neil version patch --no-tag"))
 
 (defn version-string []
   (-> (edn/read-string (slurp "deps.edn"))
