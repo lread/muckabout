@@ -30,4 +30,7 @@
           :task ci-publish/clojars-deploy}
          -ci-github-create-release
          {:doc "triggered on ci by release tag"
-          :task ci-publish/github-create-release}}}
+          :task ci-publish/github-create-release}
+         -ci-cljdoc-request-build
+         {:doc "ask cljdoc to build docs for new release"
+          :task ci-publish/cljdoc-request-build}}}

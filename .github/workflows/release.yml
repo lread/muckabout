@@ -32,3 +32,6 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: bb -ci-github-create-release
+
+    - name: Inform Cljdoc
+      run: bb -ci-cljdoc-request-build
