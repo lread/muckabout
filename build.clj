@@ -1,12 +1,18 @@
 (ns build
   (:require [clojure.tools.build.api :as b]
+            [clojure.edn :as edn]
             [deps-deploy.deps-deploy :as dd]))
 
-(def lib 'com.github.lread/muckabout)
-(def version (str "1.0." (b/git-count-revs {})))
+;; babashka/neil-isms
+(def project (-> (edn/read-string (slurp "deps.edn"))
+                 :aliases :neil :project))
+(def lib (:name project))
+(def version (:version project))
+
+;; build constants
 (def class-dir "target/classes")
 (def basis (b/create-basis {:project "deps.edn"}))
-(def jar-file (format "target/%s.jar" (name lib)))
+(def jar-file (format "target/%s-%s.jar" (name lib) version))
 
 (defn jar
   "Build library jar file.
@@ -29,7 +35,9 @@
           :jar-file jar-file}))
 
 (defn install
-  [_]
+  "mimics: lein install"
+  [opts]
+  (jar opts)
   (println "install")
   (b/install {:class-dir class-dir
               :lib lib
@@ -37,14 +45,11 @@
               :basis basis
               :jar-file jar-file}))
 
-(defn tag
-  [_]
-  (println "tag" version)
-  (b/git-process {:git-args (format "tag -a v%s -m muckety-muck" version)})
-  (b/git-process {:git-args (format "push origin tag v%s" version)}))
-
 (defn deploy
-  [_]
+  "mimics: lein deploy clojars
+  called from CI workflow."
+  [opts]
+  (jar opts)
   (println "deploy")
   (dd/deploy {:installer :remote
               :artifact jar-file

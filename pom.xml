@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
   <name>muckabout</name>
   <description>A lib in which to muck about</description>
-  <url>https://codeberg.org/lread/muckabout</url>
+  <url>https://github.com/lread/muckabout</url>
   <scm>
-    <url>https://codeberg.org/lread/muckabout</url>
-    <connection>scm:git:git@codeberg.org:lread/muckabout.git</connection>
-    <developerConnection>scm:git:git@codeberg.org:lread/muckabout.git</developerConnection>
+    <url>https://github.com/lread/muckabout</url>
+    <connection>scm:git:git@github.com:lread/muckabout.git</connection>
+    <developerConnection>scm:git:git@github.com:lread/muckabout.git</developerConnection>
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

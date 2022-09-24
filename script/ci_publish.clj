@@ -1,7 +1,10 @@
 (ns ci-publish
+  "Publish work we invoke from GitHub Actions"
   (:require [babashka.tasks :as t]
             [lread.status-line :as status]
             [version]))
+
+(def changelog-url "https://github.com/lread/muckabout/blob/main/changelog.adoc")
 
 (defn- assert-on-ci []
   (when (not (System/getenv "CI"))
@@ -23,7 +26,7 @@
 (defn clojars-deploy []
   (assert-on-ci)
   (analyze-ci-tag) ;; fail if non or no version tag
-  (t/shell "lein deploy clojars"))
+  (t/shell "clojure -T:deploy"))
 
 (defn github-create-release[]
   (assert-on-ci)
@@ -31,4 +34,4 @@
     (t/shell "gh release create"
              tag
              "--title" ref-version
-             "--notes" (format "[change log](/changelog.adoc#%s)" ref-version))))
+             "--notes" (format "[change log](%s#%s)" changelog-url ref-version))))

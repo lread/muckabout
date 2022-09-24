@@ -73,24 +73,13 @@
                 :else :pass)}]))
 
 (defn bump-version!
-  "Bump :release in version.edn file while preserving any formatting and comments"
+  "bump version stored in deps.edn"
   []
-  (spit "version.edn"
-        (-> "version.edn"
-            z/of-file
-            (z/find-value z/next :release)
-            z/right
-            (z/edit inc)
-            z/root-string)))
+  (t/shell "bb neil version patch"))
 
 (defn version-string []
-  (let [{:keys [major minor release qualifier]} (-> "version.edn"
-                                                    slurp
-                                                    edn/read-string)]
-    (format "%s.%s.%s%s"
-            major minor release (if qualifier
-                                  (str "-" qualifier)
-                                  ""))))
+  (-> (edn/read-string (slurp "deps.edn"))
+      :aliases :neil :project :version))
 
 (defn- update-file! [fname desc match replacement]
   (let [old-content (slurp fname)
@@ -148,17 +137,17 @@
                   ;; followed by next section indicator
                   "$3")))
 
-(defn commit-changes! [version]
-  (t/shell "git add version.edn project.clj changelog.adoc README.adoc")
+(defn- commit-changes! [version]
+  (t/shell "git add deps.edn changelog.adoc README.adoc")
   (t/shell "git commit -m" (str "Release: updates for version " version) ))
 
-(defn tag! [tag version]
+(defn- tag! [tag version]
   (t/shell "git tag" tag "-m" (str "For release version: " version)))
 
-(defn push! []
+(defn- push! []
   (t/shell "git push"))
 
-(defn push-tag! [tag]
+(defn- push-tag! [tag]
   (t/shell "git push origin" tag))
 
 (defn -main [& _args]
