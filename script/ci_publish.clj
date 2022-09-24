@@ -34,4 +34,4 @@
     (t/shell "gh release create"
              tag
              "--title" ref-version
-             "--notes" (format "[change log](%s#%s)" changelog-url ref-version))))
+             "--notes" (format "[Changelog](%s#%s)" changelog-url ref-version))))
