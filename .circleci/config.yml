@@ -53,7 +53,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^Release-.*/
+              only: /^v\d.*/
 
 jobs:
   test:

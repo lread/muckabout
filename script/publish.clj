@@ -139,10 +139,10 @@
 
 (defn- commit-changes! [version]
   (t/shell "git add deps.edn changelog.adoc README.adoc")
-  (t/shell "git commit -m" (str "Release: updates for version " version) ))
+  (t/shell "git commit -m" (str "Release: applied " version) ))
 
-(defn- tag! [tag version]
-  (t/shell "git tag" tag "-m" (str "For release version: " version)))
+(defn- tag! []
+  (t/shell "bb neil version tag"))
 
 (defn- push! []
   (t/shell "git push"))
@@ -181,7 +181,7 @@
           (status/line :head "Committing changes")
           (commit-changes! version)
           (status/line :head "Tagging & pushing")
-          (tag! release-tag version)
+          (tag!)
           (push!)
           (push-tag! release-tag)
           (status/line :detail "\nLocal work done.")
