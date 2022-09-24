@@ -2,6 +2,8 @@
 
 == Unreleased
 
+* typo
+
 == v1.1.44 - 2022-09-24 [[v1.1.44]]
 
 * nope, tag does not trigger if skip ci
