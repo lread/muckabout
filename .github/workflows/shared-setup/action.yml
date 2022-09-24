@@ -35,7 +35,7 @@ runs:
         bb: 'latest'
 
     - name: Tools Versions
-      shell: ${{ shell }}
+      shell: ${{ inputs.shell }}
       run: |
         echo "java -version"
         java -version
@@ -45,9 +45,9 @@ runs:
         clojure --version
 
     - name: Download Clojure Dependencies
-      shell: ${{ shell }}
+      shell: ${{ inputs.shell }}
       run: bb download-deps
 
     - name: Run tests
-      shell: ${{ shell }}
+      shell: ${{ inputs.shell }}
       run: bb test
