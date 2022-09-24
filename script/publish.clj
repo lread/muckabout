@@ -3,7 +3,6 @@
             [lread.status-line :as status]
             [clojure.edn :as edn]
             [clojure.string :as string]
-            [rewrite-clj.zip :as z]
             [version]))
 
 (def github-coords "lread/muckabout")
@@ -88,16 +87,6 @@
       (status/die 1 "Expected to %s in %s" desc fname)
       (spit fname new-content))))
 
-(defn- update-project-clj! [version]
-  (status/line :detail "Applying version %s to project.clj" version)
-  (spit "project.clj"
-        (-> "project.clj"
-            z/of-file
-            (z/find-value z/next 'defproject)
-            z/right z/right
-            (z/replace version)
-            z/root-string)))
-
 (defn- update-readme! [version]
   (status/line :detail "Applying version %s to readme" version)
   (update-file! readme-fname
@@ -175,7 +164,6 @@
           (status/line :detail "Release tag: %s" release-tag)
           (status/line :detail "Last release tag: %s" last-release-tag)
           (status/line :head "Updating docs")
-          (update-project-clj! version)
           (update-readme! version)
           (update-changelog! version release-tag last-release-tag)
           (status/line :head "Committing changes")
