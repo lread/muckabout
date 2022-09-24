@@ -128,7 +128,7 @@
 
 (defn- commit-changes! [version]
   (t/shell "git add deps.edn changelog.adoc README.adoc")
-  (t/shell "git commit -m" (str "Release: apply version " version " [skip ci]") ))
+  (t/shell "git commit -m" (str "Release: apply version " version)))
 
 (defn- tag! [tag version]
   (t/shell "git tag" tag "-m" (str "For release: " version)))
