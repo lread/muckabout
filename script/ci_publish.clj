@@ -26,7 +26,7 @@
 (defn clojars-deploy []
   (assert-on-ci)
   (analyze-ci-tag) ;; fail if non or no version tag
-  (t/shell "clojure -T:deploy"))
+  (t/shell "clojure -T:build deploy"))
 
 (defn github-create-release[]
   (assert-on-ci)
