@@ -1,5 +1,5 @@
 = Muckabout
-:lib-version: 1.1.42
+:lib-version: 1.1.43
 
 Using adoc parameters is nice.
 Here's the lib version: {lib-version}.
