@@ -18,7 +18,9 @@ jobs:
       with:
         path: |
           ~/.m2/repository
-        key: cljdeps-${{ hashFiles('project.clj') }}
+          ~/.deps.clj
+          ~/.gitlibs
+        key: cljdeps-${{ hashFiles('deps.edn', 'bb.edn') }}
         restore-keys: cljdeps-
 
     - name: Setup Java
@@ -28,20 +30,22 @@ jobs:
         java-version: '11'
 
     - name: Install Clojure Tools
-      uses: DeLaGuardo/setup-clojure@9.3
+      uses: DeLaGuardo/setup-clojure@9.5
       with:
-        lein: 'latest'
+        cli: 'latest'
         bb: 'latest'
 
     - name: Tools Versions
       run: |
+        echo "java -version"
+        java -version
         echo "bb --version"
         bb --version
-        echo "lein --version"
-        lein --version
+        echo "clojure --version"
+        clojure --version
 
     - name: Download Clojure Dependencies
-      run: lein deps
+      run: bb download-deps
 
     - name: Run tests
-      run: lein test
+      run: bb test

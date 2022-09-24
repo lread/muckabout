@@ -10,12 +10,21 @@
          :enter (let [{:keys [name]} (current-task)] (status/line :head "TASK %s %s" name (string/join " " *command-line-args*)))
          :leave (let [{:keys [name]} (current-task)] (status/line :detail "\nTASK %s done." name))
          ;; tasks
-         neil
-         {:doc "Pinned version of babashka/neil"
-          :task babashka.neil/-main}
+         download-deps
+         {:doc "bring down Clojure deps"
+          :task download-deps/-main}
+         test
+         {:doc "run tests"
+          :task (clojure "-M:test")}
+
          publish
          {:doc "Publish a release"
           :task publish/-main}
+
+         neil
+         {:doc "Pinned version of babashka/neil"
+          :task babashka.neil/-main}
+
          -ci-clojars-deploy
          {:doc "triggered on ci by release tag"
           :task ci-publish/clojars-deploy}
