@@ -3,6 +3,10 @@ inputs:
   jdk:
     description: 'jdk version'
     required: true
+  shell:
+    description: 'which shell to use'
+    required: false
+    default: bash
 
 runs:
   using: 'composite'
@@ -31,6 +35,7 @@ runs:
         bb: 'latest'
 
     - name: Tools Versions
+      shell: ${{ shell }}
       run: |
         echo "java -version"
         java -version
@@ -40,7 +45,9 @@ runs:
         clojure --version
 
     - name: Download Clojure Dependencies
+      shell: ${{ shell }}
       run: bb download-deps
 
     - name: Run tests
+      shell: ${{ shell }}
       run: bb test
