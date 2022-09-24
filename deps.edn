@@ -8,5 +8,5 @@
           :ns-default build}
   ;; we use babashka/neil for project attributes
   ;; publish workflow references these values (and bumps version)
-  :neil {:project {:version "1.1.44"
+  :neil {:project {:version "1.1.45"
                    :name com.github.lread/muckabout}}}}
