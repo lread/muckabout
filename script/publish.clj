@@ -131,7 +131,7 @@
   (t/shell "git commit -m" (str "Release: applied " version) ))
 
 (defn- tag! []
-  (t/shell "bb neil version tag"))
+  (t/shell "bb neil version tag --force"))
 
 (defn- push! []
   (t/shell "git push"))
