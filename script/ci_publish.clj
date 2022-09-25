@@ -7,7 +7,7 @@
             [lread.status-line :as status]
             [build-shared]))
 
-(def changelog-url "https://github.com/clj-commons/clj-yaml/blob/main/CHANGELOG.adoc")
+(def changelog-url "https://github.com/lread/muckabout/blob/main/CHANGELOG.adoc")
 
 (defn- assert-on-ci []
   (when (not (System/getenv "CI"))
