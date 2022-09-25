@@ -2,13 +2,12 @@
   "Publish work we invoke from GitHub Actions.
   Separated out here:
   - to make it clear what is happening on ci
-  - rate of change here should be less/different than publish"
+  - rate of change here should be less/different than in publish namespace"
   (:require [babashka.tasks :as t]
-            [clojure.edn :as edn]
             [lread.status-line :as status]
-            [version]))
+            [build-shared]))
 
-(def changelog-url "https://github.com/lread/muckabout/blob/main/changelog.adoc")
+(def changelog-url "https://github.com/clj-commons/clj-yaml/blob/main/CHANGELOG.adoc")
 
 (defn- assert-on-ci []
   (when (not (System/getenv "CI"))
@@ -22,34 +21,45 @@
   (let [tag (ci-tag)]
     (if (not tag)
       (status/die 1 "CI tag not found")
-      (if-let [version (version/tag->version tag)]
-        {:tag tag
-         :version version
-         :ref-version (version/ref-version version)}
-        (status/die 1 "Not recognized as version tag: %s" tag)))))
+      (let [version-from-tag (build-shared/tag->version tag)
+            lib-version (build-shared/lib-version)]
+        (cond
+          (not version-from-tag)
+          (status/die 1 "Not recognized as version tag: %s" tag)
+
+          (not= version-from-tag lib-version)
+          (status/die 1 "Lib version %s does not match version from tag %s"
+                        lib-version version-from-tag)
+          :else
+          {:tag tag
+           :version lib-version})))))
+
+;;
+;; Task entry points
+;;
 
 (defn clojars-deploy []
   (assert-on-ci)
-  (analyze-ci-tag) ;; fail if non or no version tag
+  (analyze-ci-tag) ;; fail on unexpected version tag
   (t/shell "clojure -T:build deploy"))
 
 (defn github-create-release []
   (assert-on-ci)
-  (let [{:keys [tag ref-version]} (analyze-ci-tag)]
+  (let [{:keys [tag]} (analyze-ci-tag)]
     (t/shell "gh release create"
              tag
-             "--title" ref-version
-             "--notes" (format "[Changelog](%s#%s)" changelog-url ref-version))))
+             "--title" tag
+             "--notes" (format "[Changelog](%s#%s)" changelog-url tag))))
 
-(defn- cljdoc-request-build []
+(defn cljdoc-request-build []
   (assert-on-ci)
   (let [{:keys [version]} (analyze-ci-tag)
-        project (-> "deps.edn" slurp edn/read-string :aliases :neil :project :name)]
-    (status/line :head "Informing cljdoc of %s version %s" project version)
+        lib (build-shared/lib-artifact-name)]
+    (status/line :head "Informing cljdoc of %s version %s" lib version)
     (assert-on-ci)
     (let [exit-code (->  (t/shell {:continue true}
                                   "curl" "-X" "POST"
-                                  "-d" (str "project=" project)
+                                  "-d" (str "project=" lib)
                                   "-d" (str "version=" version)
                                   "https://cljdoc.org/api/request-build2")
                          :exit)]

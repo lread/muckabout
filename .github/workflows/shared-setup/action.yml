@@ -4,6 +4,7 @@ inputs:
     description: 'jdk version'
     required: true
   shell:
+    # shell must be specified for run:s for composite actions
     description: 'which shell to use'
     required: false
     default: bash

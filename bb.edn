@@ -1,4 +1,4 @@
-{:paths ["script"]
+{:paths ["script" "build"]
  :deps {lread/status-line {:git/url "https://github.com/lread/status-line.git"
                            :sha "35ed39645038e81b42cb15ed6753b8462e60a06d"}
         babashka/neil {:git/url "https://github.com/babashka/neil.git"
@@ -9,6 +9,7 @@
                     [lread.status-line :as status])
          :enter (let [{:keys [name]} (current-task)] (status/line :head "TASK %s %s" name (string/join " " *command-line-args*)))
          :leave (let [{:keys [name]} (current-task)] (status/line :detail "\nTASK %s done." name))
+
          ;; tasks
          download-deps
          {:doc "bring down Clojure deps"
@@ -16,15 +17,17 @@
          test
          {:doc "run tests"
           :task (clojure "-M:test")}
-
+         pubchecks
+         {:doc "run only publish checks (without publishing)"
+          :task publish/pubchecks}
          publish
-         {:doc "Publish a release"
+         {:doc "Publish a release (for maintainers)"
           :task publish/-main}
-
-         neil
-         {:doc "Pinned version of babashka/neil"
+         neil ;; let's not rely on a random version of neil
+         {:doc "Pinned version of babashka/neil (used in scripting)"
           :task babashka.neil/-main}
 
+         ;; hidden tasks, no need for folks to be trying these ci invoked tasks
          -ci-clojars-deploy
          {:doc "triggered on ci by release tag"
           :task ci-publish/clojars-deploy}

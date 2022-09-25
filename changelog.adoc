@@ -1,200 +1,102 @@
 = Changelog
 
+A release with an intentional breaking changes is marked with:
+
+* [breaking] you probably need to change your code
+* [minor breaking] you likely don't need to change your code
+
+Clj-yaml makes use of SnakeYAML, please also refer to the https://bitbucket.org/snakeyaml/snakeyaml/wiki/Changes[SnakeYAML changelog].
+
+// DO NOT EDIT: the "Unreleased" section header is automatically updated by bb publish
+// bb publish will fail on any of:
+// - unreleased section not found,
+// - unreleased section empty
+// - optional attribute is not [breaking] or [minor breaking]
+//   (adjust these in publish.clj as you see fit)
 == Unreleased
 
-== v1.1.45 - 2022-09-24 [[v1.1.45]]
+* Support loading all YAML docs via new `:load-all` opt for `parse-string` and `parse-stream`
+(https://github.com/clj-commons/clj-yaml/pull/22[#22])
+(https://github.com/clj-commons/clj-yaml/commits?author=clumsyjedi[@clumsyjedi])
 
-* typo
+*  Support `:unknown-tag-fn` to read unknown tags and values
+(https://github.com/clj-commons/clj-yaml/issues/23[#23])
+(https://github.com/grzm[@grzm])
 
-https://github.com/lread/muckabout/compare/v1.1.44\...v1.1.45[commit log]
+== v0.7.110 - 2022-09-13
 
-== v1.1.44 - 2022-09-24 [[v1.1.44]]
+* Bump snakeyaml from 1.31 to 1.32 in response to CVE-2022-38752
+(https://github.com/clj-commons/clj-yaml/pull/34[#34])
+(https://github.com/danielcompton[@danielcompton])
 
-* nope, tag does not trigger if skip ci
-* inform cljdoc of as part of release workflow
+== v0.7.109 - 2022-09-02
 
-https://github.com/lread/muckabout/compare/v1.1.43\...v1.1.44[commit log]
+* Bump snakeyaml from 1.26 to 1.31 in response to CVE-2022-25857
+(https://github.com/clj-commons/clj-yaml/pull/33[#33])
+(https://github.com/wavejumper[@wavejumper])
 
-== v1.1.43 - 2022-09-24 [[v1.1.43]]
+== v0.7.108 - 2022-02-21
 
-* will skip ci help?
+* Add indent control via new `:indent` and `:indicator-indent` for `:dumper-options`
+(https://github.com/clj-commons/clj-yaml/issues/27[#27])
+(https://github.com/Oddsor[@Oddsor])
 
-https://github.com/lread/muckabout/compare/v1.1.42\...v1.1.43[commit log]
+== v0.7.107 - 2021-07-15
 
-== v1.1.42 - 2022-09-24 [[v1.1.42]]
+* Add `parse-stream` and `generate-stream`
+(https://github.com/clj-commons/clj-yaml/issues/3[#3])
+(https://github.com/davidpham87[@davidpham87])
 
-* continue experiment
+== v0.7.106 - 2021-01-28
 
-https://github.com/lread/muckabout/compare/v1.1.41\...v1.1.42[commit log]
+* Support Clojure namespaced keys
+(https://github.com/clj-commons/clj-yaml/issues/16[#16])
+(https://github.com/skuro[@skuro])
 
-== v1.1.41 - 2022-09-24 [[v1.1.41]]
+== v0.7.2 - 2020-09-01
 
-* gha shared setup step experiments
+*  Bump snakeyaml from 1.25 to 1.26 in response to CVE-2017-18640
+(https://github.com/clj-commons/clj-yaml/pull/13[#13])
+(https://github.com/erichaberkorn[@erichaberkorn])
+*  Expose `:max-aliases-for-collections` and `:allow-recursive-keys` options for `parse-string`
+(https://github.com/clj-commons/clj-yaml/pull/13[#13])
+(https://github.com/erichaberkorn[@erichaberkorn])
+*  Expose `:allow-duplicate-keys` option for `parse-string`
+(https://github.com/clj-commons/clj-yaml/pull/14[#14])
+(https://github.com/erichaberkorn[@erichaberkorn])
 
-https://github.com/lread/muckabout/compare/v1.1.40\...v1.1.41[commit log]
+== v0.7.1 - 2019-04-14
 
-== v1.1.40 - 2022-09-24 [[v1.1.40]]
+* Bump snakeyaml from 1.24 to 1.25, org.flatland/ordered from 1.57 to 1.59, and clojure from 1.7.0 to 1.10.1 (and mark as provided)
+(https://github.com/clj-commons/clj-yaml/pull/7[#7])
+(https://github.com/stig[@stig])
+(https://github.com/clj-commons/clj-yaml/pull/10[#10])
+(https://github.com/slipset[@slipset])
 
-* matrix builds?
+== v0.7.0 - 2019-03-15
 
-https://github.com/lread/muckabout/compare/v1.1.39\...v1.1.40[commit log]
+* Accept emoji
+(https://github.com/clj-commons/clj-yaml/pull/5[#5])
+(https://github.com/gordonsyme[@gordonsyme])
+* Bump snakeyaml from 1.23 to 1.24
+(https://github.com/clj-commons/clj-yaml/pull/5[#5])
+(https://github.com/gordonsyme[@gordonsyme])
 
-== v1.1.39 - 2022-09-24 [[v1.1.39]]
+== v0.6.1 - 2019-02-06
 
-* release desc update
+* Restore default text-wrapping behavior of prior release
+(https://github.com/clj-commons/clj-yaml/pull/2[#2])
+(https://github.com/aviflax[@aviflax])
 
-https://github.com/lread/muckabout/compare/v1.1.38\...v1.1.39[commit log]
+== v0.6.0 - 2019-01-04
 
-== v1.1.38 - 2022-09-24 [[v1.1.38]]
+First release under https://github.com/clj-commons[clj-commons] project!
 
-* project name
+* Change org and group-id: `circleci` is now `clj-commons`
+(https://github.com/slipset[@slipset])
 
-https://github.com/lread/muckabout/compare/v1.1.37\...v1.1.38[commit log]
+== Older versions
 
-== v1.1.37 - 2022-09-24 [[v1.1.37]]
+This project forked from https://github.com/CircleCI-Archived/clj-yaml[circleci/yaml] which forked from https://github.com/lancepantz/clj-yaml[clj-yaml].
 
-* fix deploy cmd
-
-https://github.com/lread/muckabout/compare/v1.1.36\...v1.1.37[commit log]
-
-== v1.1.36 - 2022-09-24 [[v1.1.36]]
-
-* neil, no you can't tag
-
-https://github.com/lread/muckabout/compare/v1.1.35\...v1.1.36[commit log]
-
-== v1.1.35 - 2022-09-24 [[v1.1.35]]
-
-* fully qualify gh release
-
-https://github.com/lread/muckabout/compare/v1.1.34\...v1.1.35[commit log]
-
-== v1.1.32 - 2022-09-23 [[v1.1.32]]
-
-* utc for changelog date
-
-https://github.com/lread/muckabout/compare/Release-1.1.31\...Release-1.1.32[commit log]
-
-== v1.1.31 - 2022-09-23 [[v1.1.31]]
-
-* changes
-
-https://github.com/lread/muckabout/compare/Release-1.1.30\...Release-1.1.31[commit log]
-
-== v1.1.30 - 2022-09-23 [[v1.1.30]]
-
-* oh me typos!
-
-https://github.com/lread/muckabout/compare/Release-1.1.29\...Release-1.1.30[commit log]
-
-== v1.1.29 - 2022-09-23 [[v1.1.29]]
-
-* booboo fixed
-
-https://github.com/lread/muckabout/compare/Release-1.1.28\...Release-1.1.29[commit log]
-
-== v1.1.28 - 2022-09-23 [[v1.1.28]]
-
-* missed some stuff
-
-https://github.com/lread/muckabout/compare/Release-1.1.27\...Release-1.1.28[commit log]
-
-== v1.1.27 - 2022-09-23 [[v1.1.27]]
-
-* back to playing on github actions
-
-https://github.com/lread/muckabout/compare/Release-1.1.26\...Release-1.1.27[commit log]
-
-== v1.1.26 - 2022-09-22 [[v1.1.26]]
-
-* jar signing on
-
-https://github.com/lread/muckabout/compare/Release-1.1.25\...Release-1.1.26[commit log]
-
-== v1.1.25 - 2022-09-22 [[v1.1.25]]
-
-* jar signing off
-
-https://github.com/lread/muckabout/compare/Release-1.1.24\...Release-1.1.25[commit log]
-
-== v1.1.24 - 2022-09-22 [[v1.1.24]]
-
-* project corrections
-
-https://github.com/lread/muckabout/compare/Release-1.1.23\...Release-1.1.24[commit log]
-
-== v1.1.23 - 2022-09-22 [[v1.1.23]]
-
-* my my
-
-https://github.com/lread/muckabout/compare/Release-1.1.22\...Release-1.1.23[commit log]
-
-== v1.1.22 - 2022-09-22 [[v1.1.22]]
-
-* try this, try that
-
-https://github.com/lread/muckabout/compare/Release-1.1.21\...Release-1.1.22[commit log]
-
-== v1.1.21 - 2022-09-22 [[v1.1.21]]
-
-* more more more
-
-https://github.com/lread/muckabout/compare/Release-1.1.20\...Release-1.1.21[commit log]
-
-== v1.1.20 [minor breaking] - 2022-09-22 [[v1.1.20]]
-
-* more breaks
-
-https://github.com/lread/muckabout/compare/Release-1.1.19\...Release-1.1.20[commit log]
-
-== v1.1.19 [breaking] - 2022-09-22 [[v1.1.19]]
-
-* breaking typo
-
-https://github.com/lread/muckabout/compare/Release-1.1.18\...Release-1.1.19[commit log]
-
-== v1.1.18 - 2022-09-22 [[v1.1.18]]
-
-* more publish script updates
-
-https://github.com/lread/muckabout/compare/Release-1.1.17\...Release-1.1.18[commit log]
-
-== v1.1.17 - 2022-09-22 [[v1.1.17]]
-
-* publish script updates
-
-https://github.com/lread/muckabout/compare/Release-1.0.8\...Release-1.1.17[commit log]
-
-== v1.1.16 - 2022-09-22 [[v1.1.16]]
-
-* yaml
-
-
-https://github.com/lread/muckabout/compare/Release-1.0.8\...Release-1.1.16[commit log]
-
-== v1.1.15 - 2022-09-22 [[v1.1.15]]
-
-* yaml
-
-
-https://github.com/lread/muckabout/compare/Release-1.0.8\...Release-1.1.15[commit log]
-
-== v1.1.14 - 2022-09-22 [[v1.1.14]]
-
-* yaml
-
-https://github.com/lread/muckabout/compare/Release-1.0.8\...Release-1.1.14[commit log]
-
-== v1.1.13 - 2022-09-22 [[v1.1.13]]
-
-* hey ya
-
-
-https://github.com/lread/muckabout/compare/Release-1.0.8\...Release-1.1.13[commit log]
-
-== v1.1.12 - 2022-09-22 [[v1.1.12]]
-
-* some description
-
-https://github.com/lread/muckabout/compare/Release-1.0.8\...Release-1.1.12[commit log]
-
+Neither of these projects maintained a change log.

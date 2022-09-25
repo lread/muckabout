@@ -1,33 +1,64 @@
 (ns publish
+  "Publish work that happens locally on a maintainer's work"
   (:require [babashka.tasks :as t]
-            [lread.status-line :as status]
-            [clojure.edn :as edn]
+            [build-shared]
             [clojure.string :as string]
-            [version]))
+            [lread.status-line :as status]
+            [version-clj.core :as v]))
 
-(def github-coords "lread/muckabout")
-(def changelog-fname "changelog.adoc")
+;; Note to lurkers: doc updates are geared to AsciiDoc files.
+
+(def github-coords "clj-commons/yaml")
+(def changelog-fname "CHANGELOG.adoc")
 (def readme-fname "README.adoc")
+;; this project started with "Release-" but we prefer "v" as a version tag prefix
+(def legacy-version-tag-prefix "Release-")
 
-(defn main-branch? []
+(defn- raw-tags[]
+  (->>  (t/shell {:out :string}
+                 "git ls-remote --tags --refs")
+          :out
+          string/split-lines))
+
+(defn- parse-raw-tag [raw-tag-line]
+  (let [pattern (re-pattern (str "refs/tags/((?:"
+                                 legacy-version-tag-prefix "|"
+                                 build-shared/version-tag-prefix ")(\\d+\\..*))"))]
+    (some->> (re-find pattern raw-tag-line)
+             rest
+             (zipmap [:tag :version]))))
+
+(defn- most-recent-tag [parsed-tags]
+  (->>  parsed-tags
+        (sort-by :version v/version-compare)
+        reverse
+        first
+        :tag))
+
+(defn last-release-tag []
+  (->>  (raw-tags)
+        (keep parse-raw-tag)
+        (most-recent-tag)))
+
+(defn- main-branch? []
   (let [current-branch (->> (t/shell {:out :string} "git rev-parse --abbrev-ref HEAD")
                             :out
                             string/trim)]
     (= "main" current-branch)))
 
-(defn uncommitted-code? []
+(defn- uncommitted-code? []
   (-> (t/shell {:out :string}
                "git status --porcelain")
       :out
       string/trim
       seq))
 
-(defn unpushed-commits? []
+(defn- unpushed-commits? []
   (let [{:keys [exit :out]} (t/shell {:continue true :out :string}
-                                      "git cherry -v")]
+                                     "git cherry -v")]
     (if (zero? exit)
       (-> out string/trim seq)
-      (throw (ex-info "Failed to check for unpushed commits" {})))))
+      (status/die 1 "Failed to check for unpushed commits, are you on an unpushed branch?"))))
 
 (defn- analyze-changelog
   "Certainly not fool proof, but should help for common mistakes"
@@ -46,7 +77,7 @@
         (string/blank? desc)
         (conj {:error :content-missing})))))
 
-(defn release-checks []
+(defn- release-checks []
   (let [changelog-findings (reduce (fn [acc n] (assoc acc (:error n) n))
                                    {}
                                    (analyze-changelog))]
@@ -71,14 +102,10 @@
                 (:content-missing changelog-findings) :fail
                 :else :pass)}]))
 
-(defn bump-version!
+(defn- bump-version!
   "bump version stored in deps.edn"
   []
   (t/shell "bb neil version patch --no-tag"))
-
-(defn version-string []
-  (-> (edn/read-string (slurp "deps.edn"))
-      :aliases :neil :project :version))
 
 (defn- update-file! [fname desc match replacement]
   (let [old-content (slurp fname)
@@ -92,7 +119,7 @@
   (update-file! readme-fname
                 "update :lib-version: adoc attribute"
                 #"(?m)^(:lib-version: )(.*)$"
-                (str "$1"version)))
+                (str "$1" version)))
 
 (defn- yyyy-mm-dd-now-utc []
   (-> (java.time.Instant/now) str (subs 0 10)))
@@ -104,27 +131,27 @@
                 #"(?ims)^== Unreleased(.*?)($.*?)(== v\d|\z)"
                 (str
                   ;; add Unreleased section for next released
-                  "== Unreleased\n\n"
+                 "== Unreleased\n\n"
                   ;; replace "Unreleased" with actual version
-                  "== v" version
+                 "== v" version
                  ;; followed by any attributes
-                  "$1"
+                 "$1"
                   ;; followed by datestamp (local time is fine)
-                  (str " - " (yyyy-mm-dd-now-utc))
+                 (str " - " (yyyy-mm-dd-now-utc))
                   ;; followed by an AsciiDoc anchor for easy referencing
-                  (str " [[v" version  "]]")
+                 (str " [[v" version  "]]")
                   ;; followed by section content
-                  "$2"
+                 "$2"
                   ;; followed by link to commit log
-                  (when last-release-tag
-                    (str
-                      "https://github.com/" github-coords "/compare/"
-                      last-release-tag
-                      "\\\\..."  ;; single backslash is escape for AsciiDoc
-                      release-tag
-                      "[commit log]\n\n"))
+                 (when last-release-tag
+                   (str
+                    "https://github.com/" github-coords "/compare/"
+                    last-release-tag
+                    "\\\\..."  ;; single backslash is escape for AsciiDoc
+                    release-tag
+                    "[commit log]\n\n"))
                   ;; followed by next section indicator
-                  "$3")))
+                 "$3")))
 
 (defn- commit-changes! [version]
   (t/shell "git add deps.edn changelog.adoc README.adoc")
@@ -139,8 +166,10 @@
 (defn- push-tag! [tag]
   (t/shell "git push origin" tag))
 
-(defn -main [& _args]
-  (status/line :head "Performing release checks")
+;; task entry points
+
+(defn pubchecks []
+  (status/line :head "Performing publish checks")
   (let [check-results (release-checks)
         passed? (every? #(= :pass (:result %)) check-results)]
     (doseq [{:keys [check result msg]} check-results]
@@ -152,33 +181,55 @@
                    check)
       (when msg
         (status/line :detail "  > %s" msg)))
-   (if (not passed?)
-      (status/die 1 "Release checks failed")
-      (do
-        (status/line :head "Calculating versions")
-        (bump-version!)
-        (let [last-release-tag (version/last-release-tag)
-              version (version-string)
-              release-tag (version/version->tag version)]
-          (status/line :detail "Release version: %s" version)
-          (status/line :detail "Release tag: %s" release-tag)
-          (status/line :detail "Last release tag: %s" last-release-tag)
-          (status/line :head "Updating docs")
-          (update-readme! version)
-          (update-changelog! version release-tag last-release-tag)
-          (status/line :head "Committing changes")
-          (commit-changes! version)
-          (status/line :head "Tagging & pushing")
-          (tag! release-tag version)
-          (push!)
-          (push-tag! release-tag)
-          (status/line :detail "\nLocal work done.")
-          (status/line :head "Remote work")
-          (status/line :detail "The remainging work will be triggered by the release tag on CI:")
-          (status/line :detail "- Publish a release jar to clojars")
-          (status/line :detail "- Creating a GitHub release"))))))
+    (when (not passed?)
+      (status/die 1 "Release checks failed"))))
+
+(defn -main [& _args]
+  (pubchecks)
+  (status/line :head "Calculating versions")
+  (bump-version!)
+  (let [last-release-tag (last-release-tag)
+        version (build-shared/lib-version)
+        release-tag (build-shared/version->tag version)]
+    (status/line :detail "Release version: %s" version)
+    (status/line :detail "Release tag: %s" release-tag)
+    (status/line :detail "Last release tag: %s" last-release-tag)
+    (status/line :head "Updating docs")
+    (update-readme! version)
+    (update-changelog! version release-tag last-release-tag)
+    (status/line :head "Committing changes")
+    (commit-changes! version)
+    (status/line :head "Tagging & pushing")
+    (tag! release-tag version)
+    (push!)
+    (push-tag! release-tag)
+    (status/line :detail "\nLocal work done.")
+    (status/line :head "Remote work")
+    (status/line :detail "The remainging work will be triggered by the release tag on CI:")
+    (status/line :detail "- Publish a release jar to clojars")
+    (status/line :detail "- Creating a GitHub release")))
 
 ;; default action when executing file directly
 (when (= *file* (System/getProperty "babashka.file"))
   (apply -main *command-line-args*))
 
+(comment
+
+  (parse-raw-tag "boo refs/tags/Release-1.8")
+  ;; => {:tag "Release-1.8", :version "1.8"}
+
+  (parse-raw-tag "boo refs/tags/v1.8")
+  ;; => {:tag "v1.8", :version "1.8"}
+
+  (parse-raw-tag "boo refs/tags/1.8")
+  ;; => nil
+
+  (parse-raw-tag "boo refs/tags/nope")
+  ;; => nil
+
+  (most-recent-tag [{:tag "a" :version "0.0.2"}
+                    {:tag "b" :version "7.8.9"}
+                    {:tag "c" :version "0.0.4"}
+                    {:tag "d" :version "1.2.3"}])
+  ;; => "b"
+)

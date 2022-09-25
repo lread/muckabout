@@ -1,6 +1,13 @@
+bin
+lib
+classes
+*.jar
+pom.xml*
 /target
-/.cpcache
-/.calva
-/.lsp
-/.clj-kondo/.cache
 /.lein-failures
+/.lein-repl-history
+/.lsp
+/.clj-kondo
+.nrepl-port
+/.calva
+.cpcache
