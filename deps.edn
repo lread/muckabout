@@ -7,7 +7,7 @@
  :aliases
  {;; we use babashka/neil for project attributes
   ;; publish workflow references these values (and automatically bumps patch)
-  :neil {:project {:version "1.0.28"
+  :neil {:project {:version "1.1.45"
                    :name com.github.lread/muckabout}}
   :test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner
