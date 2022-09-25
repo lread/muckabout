@@ -5,12 +5,17 @@
                        :sha "6fc58cc6a4253c2c15f05135f1610ab3d46d961f"}
         version-clj/version-clj {:mvn/version "2.0.2"}}
  :tasks {;; setup
-         :requires ([clojure.string :as string]
+         :requires ([babashka.fs :as fs]
+                    [clojure.string :as string]
                     [lread.status-line :as status])
          :enter (let [{:keys [name]} (current-task)] (status/line :head "TASK %s %s" name (string/join " " *command-line-args*)))
          :leave (let [{:keys [name]} (current-task)] (status/line :detail "\nTASK %s done." name))
 
          ;; tasks
+         clean
+         {:doc "clean build work"
+          :task (when (fs/exists? "target")
+                  (fs/delete-tree "target"))}
          download-deps
          {:doc "bring down Clojure deps"
           :task download-deps/-main}
