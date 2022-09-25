@@ -14,7 +14,7 @@ jobs:
       matrix:
         jdk: ['8', '11', '17']
 
-    name: jdk ${{ jdk }}
+    name: jdk ${{ matrix.jdk }}
 
     steps:
     - name: Checkout
