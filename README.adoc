@@ -130,6 +130,7 @@ bb tasks
 ----
 $ git clone git://github.com/clj-commons/clj-yaml.git
 $ bb download-deps
+$ bb compile-java
 $ bb test
 ----
 
