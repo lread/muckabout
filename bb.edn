@@ -14,6 +14,9 @@
          download-deps
          {:doc "bring down Clojure deps"
           :task download-deps/-main}
+         compile-java
+         {:doc "compile java sources"
+          :task (clojure "-T:build compile-java")}
          test
          {:doc "run tests"
           :task (clojure "-M:test")}
