@@ -24,7 +24,10 @@
           :task (clojure "-T:build compile-java")}
          test
          {:doc "run tests"
-          :task (clojure "-M:test")}
+          :task (do
+                  (when (not (fs/exists? "target/classes"))
+                    (run 'compile-java))
+                  (clojure "-M:test"))}
          pubchecks
          {:doc "run only publish checks (without publishing)"
           :task publish/pubchecks}
