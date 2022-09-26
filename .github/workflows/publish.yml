@@ -8,7 +8,7 @@ jobs:
   test:
     uses: ./.github/workflows/tests.yml
 
-  deploy:
+  publish:
     environment: publish
     runs-on: ubuntu-latest
     needs: [test]
