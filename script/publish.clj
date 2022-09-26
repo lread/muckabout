@@ -155,7 +155,7 @@
 
 (defn- commit-changes! [version]
   (t/shell "git add deps.edn" changelog-fname readme-fname)
-  (t/shell "git commit -m" (str "Release: apply version " version)))
+  (t/shell "git commit -m" (str "publish: apply version " version)))
 
 (defn- tag! [tag version]
   (t/shell "git tag" tag "-m" (str "For release: " version)))
