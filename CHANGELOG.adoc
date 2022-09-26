@@ -16,6 +16,7 @@ Clj-yaml makes use of SnakeYAML, please also refer to the https://bitbucket.org/
 == Unreleased
 
 * rename pubchecks task to pubcheck
+* turn on javac linting
 
 == v1.1.49 - 2022-09-26 [[v1.1.49]]
 

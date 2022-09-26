@@ -37,7 +37,7 @@
                       :basis basis}
                (> major 8)
                ;; replaces old jdk <= 8 -source and -target opts
-               (assoc :javac-opts ["--release" "8"])))))
+               (assoc :javac-opts ["--release" "8" "-Xlint"])))))
 
 (defn jar [_]
   (compile-java nil)
