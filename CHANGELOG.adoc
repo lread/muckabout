@@ -15,7 +15,13 @@ Clj-yaml makes use of SnakeYAML, please also refer to the https://bitbucket.org/
 //   (adjust these in publish.clj as you see fit)
 == Unreleased
 
+* filename case of changelog - muckabout remnant
+
+== v1.1.48 - 2022-09-26 [[v1.1.48]]
+
 * uppercase changelog in git
+
+https://github.com/lread/muckabout/compare/v1.1.47\...v1.1.48[commit log]
 
 == v1.1.47 - 2022-09-26 [[v1.1.47]]
 

@@ -23,7 +23,7 @@ It validates:
 
 Then locally:
 
-. bumps the version `<release count>`` (our scheme is `major.minor.<release count>`)
+. bumps the version `<release count>` (our scheme is `major.minor.<release count>`)
 ** Our version is stored in `deps.edn` under `:aliases` `:neil` `:project` `:version`
 . applies version to:
 .. `README.adoc`
@@ -39,6 +39,8 @@ Then up on CI, the CI publish workflow is only triggered when it sees a release 
 . a release jar is published to clojars
 . a GitHub release is created
 . cljdoc is informed of the new release
+
+TIP: you can run validations only via `bb pubchecks`
 
 == Relevant Sources
 

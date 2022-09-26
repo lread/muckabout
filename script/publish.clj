@@ -154,7 +154,7 @@
                  "$3")))
 
 (defn- commit-changes! [version]
-  (t/shell "git add deps.edn changelog.adoc README.adoc")
+  (t/shell "git add deps.edn" changelog-fname readme-fname)
   (t/shell "git commit -m" (str "Release: apply version " version)))
 
 (defn- tag! [tag version]
