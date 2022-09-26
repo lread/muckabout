@@ -168,7 +168,7 @@
 
 ;; task entry points
 
-(defn pubchecks []
+(defn pubcheck []
   (status/line :head "Performing publish checks")
   (let [check-results (release-checks)
         passed? (every? #(= :pass (:result %)) check-results)]
@@ -185,7 +185,7 @@
       (status/die 1 "Release checks failed"))))
 
 (defn -main [& _args]
-  (pubchecks)
+  (pubcheck)
   (status/line :head "Calculating versions")
   (bump-version!)
   (let [last-release-tag (last-release-tag)

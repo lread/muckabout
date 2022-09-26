@@ -28,9 +28,9 @@
                   (when (not (fs/exists? "target/classes"))
                     (run 'compile-java))
                   (clojure "-M:test"))}
-         pubchecks
+         pubcheck
          {:doc "run only publish checks (without publishing)"
-          :task publish/pubchecks}
+          :task publish/pubcheck}
          publish
          {:doc "Publish a release (for maintainers)"
           :task publish/-main}
