@@ -8,13 +8,14 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os.name }}-latest
     strategy:
       fail-fast: false
       matrix:
+        os: [{name: 'windows', shell: 'pwsh'}, {name: 'ubuntu', shell: 'bash'}]
         jdk: ['8', '11', '17']
 
-    name: jdk ${{ matrix.jdk }}
+    name: ${{matrix.os.name}} - jdk ${{ matrix.jdk }}
 
     steps:
     - name: Checkout
@@ -24,6 +25,7 @@ jobs:
       uses: ./.github/workflows/shared-setup
       with:
         jdk: ${{ matrix.jdk }}
+        shell: ${{ matrix.os.shell }}
 
     - name: Compile java
       run: bb compile-java
