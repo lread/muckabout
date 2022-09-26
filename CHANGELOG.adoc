@@ -15,8 +15,12 @@ Clj-yaml makes use of SnakeYAML, please also refer to the https://bitbucket.org/
 //   (adjust these in publish.clj as you see fit)
 == Unreleased
 
+== v1.1.49 - 2022-09-26 [[v1.1.49]]
+
 * filename case of changelog - muckabout remnant
 * try to add windows to ci matrix
+
+https://github.com/lread/muckabout/compare/v1.1.48\...v1.1.49[commit log]
 
 == v1.1.48 - 2022-09-26 [[v1.1.48]]
 
