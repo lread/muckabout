@@ -1,6 +1,6 @@
 = `clj-commons/clj-yaml`
 // DO NOT EDIT: the lib-version parameter is automatically updated by bb publish
-:lib-version: 1.1.46
+:lib-version: 1.1.47
 :project-coords: clj-commons/clj-yaml
 
 Provides http://yaml.org[YAML] encoding and decoding for Clojure via the https://bitbucket.org/snakeyaml/snakeyaml[snakeyaml] Java library.
