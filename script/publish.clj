@@ -8,7 +8,8 @@
 
 ;; Note to lurkers: doc updates are geared to AsciiDoc files.
 
-(def github-coords "clj-commons/clj-http-lite")
+(def github-coords "lread/muckabout"
+  #_ "clj-commons/clj-http-lite")
 (def changelog-fname "CHANGELOG.adoc")
 (def readme-fname "README.adoc")
 ;; this project started with "Release-" but we prefer "v" as a version tag prefix

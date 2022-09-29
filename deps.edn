@@ -3,8 +3,10 @@
  :aliases
  {;; we use babashka/neil for project attributes
   ;; publish workflow references these values (and automatically bumps patch)
-  :neil {:project {:version "1.0.12"
-                   :name org.clj-commons/clj-http-lite}}
+  :neil {:project {:version #_"1.0.12"
+                   "1.4.0"
+                   :name #_org.clj-commons/clj-http-lite
+                   com.github.lread/muckabout}}
   :1.8 {:override-deps {org.clojure/clojure {:mvn/version "1.8.0"}}}
   :1.9 {:override-deps {org.clojure/clojure {:mvn/version "1.9.0"}}}
   :1.10 {:override-deps {org.clojure/clojure {:mvn/version "1.10.3"}}}
