@@ -11,7 +11,7 @@ jobs:
   publish:
     environment: publish
     runs-on: ubuntu-latest
-    needs: [test, test-jvm, test-bb]
+    needs: [test]
 
     steps:
       - name: Checkout
