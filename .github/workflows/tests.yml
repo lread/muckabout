@@ -44,9 +44,6 @@ jobs:
           jdk: ${{ matrix.jdk }}
           shell: ${{ matrix.os.shell }}
 
-      - name: Compile java
-        run: bb compile-java
-
       - name: Run tests
         run: bb test:jvm --clj-version ${{ matrix.clojure-version }}
 
