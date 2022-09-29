@@ -2,7 +2,7 @@
 :toclevels: 5
 :toc:
 // DO NOT EDIT: the lib-version parameter is automatically updated by bb publish
-:lib-version: 1.4.1
+:lib-version: 1.4.2
 
 == Introduction
 Clj-http-lite is a Clojure, Babashka and GraalVM compatible liteweight subset of http://github.com/dakrone/clj-http[clj-http].
