@@ -32,7 +32,7 @@ jobs:
         clojure-version: ["1.8", "1.9", "1.10", "1.11"]
         jdk: ['8', '11', '17']
 
-    name: ${{ matrix.os }} clj-${{ matrix.clojure-version }} jdk${{ matrix.java-version }}
+    name: ${{ matrix.os.name }} clj-${{ matrix.clojure-version }} jdk${{ matrix.java-version }}
 
     steps:
       - name: Checkout
@@ -54,7 +54,7 @@ jobs:
       matrix:
         os: [{name: 'windows', shell: 'pwsh'}, {name: 'ubuntu', shell: 'bash'}]
 
-    name: ${{ matrix.os }} bb
+    name: ${{ matrix.os.name }} bb
 
     steps:
       - name: Checkout
