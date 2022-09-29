@@ -13,6 +13,8 @@ A release with known breaking changes is marked with:
 //   (adjust these in publish.clj as you see fit)
 == Unreleased
 
+* fix some yaml hopefully
+
 == v1.4.1 - 2022-09-29 [[v1.4.1]]
 
 * If specified, request’s body encoding is now applied, else defaults to UTF-8 (https://github.com/clj-commons/clj-http-lite/issues/18[#18]) (https://github.com/lread[@lread])
