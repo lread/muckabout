@@ -63,7 +63,7 @@ jobs:
       - name: Setup
         uses: ./.github/workflows/shared-setup
         with:
-          jdk: ${{ matrix.jdk }}
+          jdk: '11'
           shell: ${{ matrix.os.shell }}
 
       - name: Run tests
