@@ -41,7 +41,7 @@
           :task publish/pubcheck}
          publish
          {:doc "Trigger a release to clojars"
-          :task (publish/-main)}
+          :task publish/-main}
          neil ;; let's not rely on a random version of neil
          {:doc "Pinned version of babashka/neil (used in scripting)"
           :extra-deps {babashka/neil {:git/url "https://github.com/babashka/neil.git"
