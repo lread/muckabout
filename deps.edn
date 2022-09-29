@@ -4,7 +4,7 @@
  {;; we use babashka/neil for project attributes
   ;; publish workflow references these values (and automatically bumps patch)
   :neil {:project {:version #_"1.0.12"
-                   "1.4.0"
+                   "1.4.1"
                    :name #_org.clj-commons/clj-http-lite
                    com.github.lread/muckabout}}
   :1.8 {:override-deps {org.clojure/clojure {:mvn/version "1.8.0"}}}

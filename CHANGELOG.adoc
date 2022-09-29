@@ -13,6 +13,8 @@ A release with known breaking changes is marked with:
 //   (adjust these in publish.clj as you see fit)
 == Unreleased
 
+== v1.4.1 - 2022-09-29 [[v1.4.1]]
+
 * If specified, request’s body encoding is now applied, else defaults to UTF-8 (https://github.com/clj-commons/clj-http-lite/issues/18[#18]) (https://github.com/lread[@lread])
 * User info from request URL now applied to basic auth (https://github.com/clj-commons/clj-http-lite/issues/34[#34]) (https://github.com/lread[@lread])
 * Nested query and form parameters are now automatically flattened (https://github.com/clj-commons/clj-http-lite/issues/43[#43]) (https://github.com/lread[@lread])
@@ -24,6 +26,8 @@ A release with known breaking changes is marked with:
 * Quality
 ** Automated CI testing added for Windows (https://github.com/clj-commons/clj-http-lite/issues/21[#21]) (https://github.com/lread[@lread])
 ** Babashka now exercised under full test suite (https://github.com/clj-commons/clj-http-lite/issues/48[#48]) (https://github.com/lread[@lread])
+
+https://github.com/lread/muckabout/compare/v1.3.1\...v1.4.1[commit log]
 
 == v0.4.392 - 2021-11-18
 
