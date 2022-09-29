@@ -1,11 +1,9 @@
 = Changelog
 
-A release with an intentional breaking changes is marked with:
+A release with known breaking changes is marked with:
 
 * [breaking] you probably need to change your code
 * [minor breaking] you likely don't need to change your code
-
-Clj-yaml makes use of SnakeYAML, please also refer to the https://bitbucket.org/snakeyaml/snakeyaml/wiki/Changes[SnakeYAML changelog].
 
 // DO NOT EDIT: the "Unreleased" section header is automatically updated by bb publish
 // bb publish will fail on any of:
@@ -15,118 +13,34 @@ Clj-yaml makes use of SnakeYAML, please also refer to the https://bitbucket.org/
 //   (adjust these in publish.clj as you see fit)
 == Unreleased
 
-== v1.3.1 - 2022-09-26 [[v1.3.1]]
+* If specified, request’s body encoding is now applied, else defaults to UTF-8 (https://github.com/clj-commons/clj-http-lite/issues/18[#18]) (https://github.com/lread[@lread])
+* User info from request URL now applied to basic auth (https://github.com/clj-commons/clj-http-lite/issues/34[#34]) (https://github.com/lread[@lread])
+* Nested query and form parameters are now automatically flattened (https://github.com/clj-commons/clj-http-lite/issues/43[#43]) (https://github.com/lread[@lread])
+* The `:insecure?` option is now applied only to the current request (https://github.com/clj-commons/clj-http-lite/issues/45[#45]) (https://github.com/lread[@lread])
+* Docs
+** Docstrings and README reviewed and updated (https://github.com/lread[@lread])
+** Guidance on mocking HTTP requests now makes sense (https://github.com/clj-commons/clj-http-lite/issues/51[#51]) (thanks https://github.com/anderseknert[@anderseknert]!)
+** Move from Markdown to AsciiDoc (https://github.com/lread[@lread])
+* Quality
+** Automated CI testing added for Windows (https://github.com/clj-commons/clj-http-lite/issues/21[#21]) (https://github.com/lread[@lread])
+** Babashka now exercised under full test suite (https://github.com/clj-commons/clj-http-lite/issues/48[#48]) (https://github.com/lread[@lread])
 
-* rename pubchecks task to pubcheck
-* turn on javac linting
+== v0.4.392 - 2021-11-18
 
-https://github.com/lread/muckabout/compare/Release-1.2.0\...v1.3.1[commit log]
+* Support self-signed certificates via `:insecure? true` option
+* Remove dependency on slingshot
+* Move to `org.clj-commons` group
+* Add compatibility with https://babashka.org/[babashka]
+* *Feature:* Support for`:oauth-token` (https://github.com/martinklepsch/clj-http-lite/pull/7[#1])
 
-== v1.1.49 - 2022-09-26 [[v1.1.49]]
+== v0.4.3 - 2019-12-04
 
-* filename case of changelog - muckabout remnant
-* try to add windows to ci matrix
+* *Feature:* Parse link headers from response and put them under `:links` (https://github.com/martinklepsch/clj-http-lite/pull/1[#1])
 
-https://github.com/lread/muckabout/compare/v1.1.48\...v1.1.49[commit log]
+== v0.4.1 - 2018-10-17
 
-== v1.1.48 - 2022-09-26 [[v1.1.48]]
+* Add type hints for GraalVM (https://github.com/clj-commons/clj-http-lite/pull/2[#2])
 
-* uppercase changelog in git
+== v0.4.0 - 2018-10-17
 
-https://github.com/lread/muckabout/compare/v1.1.47\...v1.1.48[commit log]
-
-== v1.1.47 - 2022-09-26 [[v1.1.47]]
-
-* tweak publish flow
-
-https://github.com/lread/muckabout/compare/v1.1.46\...v1.1.47[commit log]
-
-== v1.1.46 - 2022-09-25 [[v1.1.46]]
-
-* Support loading all YAML docs via new `:load-all` opt for `parse-string` and `parse-stream`
-(https://github.com/clj-commons/clj-yaml/pull/22[#22])
-(https://github.com/clj-commons/clj-yaml/commits?author=clumsyjedi[@clumsyjedi])
-
-*  Support `:unknown-tag-fn` to read unknown tags and values
-(https://github.com/clj-commons/clj-yaml/issues/23[#23])
-(https://github.com/grzm[@grzm])
-
-https://github.com/lread/muckabout/compare/v1.1.45\...v1.1.46[commit log]
-
-== v0.7.110 - 2022-09-13
-
-* Bump snakeyaml from 1.31 to 1.32 in response to CVE-2022-38752
-(https://github.com/clj-commons/clj-yaml/pull/34[#34])
-(https://github.com/danielcompton[@danielcompton])
-
-== v0.7.109 - 2022-09-02
-
-* Bump snakeyaml from 1.26 to 1.31 in response to CVE-2022-25857
-(https://github.com/clj-commons/clj-yaml/pull/33[#33])
-(https://github.com/wavejumper[@wavejumper])
-
-== v0.7.108 - 2022-02-21
-
-* Add indent control via new `:indent` and `:indicator-indent` for `:dumper-options`
-(https://github.com/clj-commons/clj-yaml/issues/27[#27])
-(https://github.com/Oddsor[@Oddsor])
-
-== v0.7.107 - 2021-07-15
-
-* Add `parse-stream` and `generate-stream`
-(https://github.com/clj-commons/clj-yaml/issues/3[#3])
-(https://github.com/davidpham87[@davidpham87])
-
-== v0.7.106 - 2021-01-28
-
-* Support Clojure namespaced keys
-(https://github.com/clj-commons/clj-yaml/issues/16[#16])
-(https://github.com/skuro[@skuro])
-
-== v0.7.2 - 2020-09-01
-
-*  Bump snakeyaml from 1.25 to 1.26 in response to CVE-2017-18640
-(https://github.com/clj-commons/clj-yaml/pull/13[#13])
-(https://github.com/erichaberkorn[@erichaberkorn])
-*  Expose `:max-aliases-for-collections` and `:allow-recursive-keys` options for `parse-string`
-(https://github.com/clj-commons/clj-yaml/pull/13[#13])
-(https://github.com/erichaberkorn[@erichaberkorn])
-*  Expose `:allow-duplicate-keys` option for `parse-string`
-(https://github.com/clj-commons/clj-yaml/pull/14[#14])
-(https://github.com/erichaberkorn[@erichaberkorn])
-
-== v0.7.1 - 2019-04-14
-
-* Bump snakeyaml from 1.24 to 1.25, org.flatland/ordered from 1.57 to 1.59, and clojure from 1.7.0 to 1.10.1 (and mark as provided)
-(https://github.com/clj-commons/clj-yaml/pull/7[#7])
-(https://github.com/stig[@stig])
-(https://github.com/clj-commons/clj-yaml/pull/10[#10])
-(https://github.com/slipset[@slipset])
-
-== v0.7.0 - 2019-03-15
-
-* Accept emoji
-(https://github.com/clj-commons/clj-yaml/pull/5[#5])
-(https://github.com/gordonsyme[@gordonsyme])
-* Bump snakeyaml from 1.23 to 1.24
-(https://github.com/clj-commons/clj-yaml/pull/5[#5])
-(https://github.com/gordonsyme[@gordonsyme])
-
-== v0.6.1 - 2019-02-06
-
-* Restore default text-wrapping behavior of prior release
-(https://github.com/clj-commons/clj-yaml/pull/2[#2])
-(https://github.com/aviflax[@aviflax])
-
-== v0.6.0 - 2019-01-04
-
-First release under https://github.com/clj-commons[clj-commons] project!
-
-* Change org and group-id: `circleci` is now `clj-commons`
-(https://github.com/slipset[@slipset])
-
-== Older versions
-
-This project forked from https://github.com/CircleCI-Archived/clj-yaml[circleci/yaml] which forked from https://github.com/lancepantz/clj-yaml[clj-yaml].
-
-Neither of these projects maintained a change log.
+* *Feature:* Java 9/10 Compatibility

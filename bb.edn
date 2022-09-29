@@ -1,8 +1,6 @@
 {:paths ["script" "build"]
  :deps {lread/status-line {:git/url "https://github.com/lread/status-line.git"
                            :sha "35ed39645038e81b42cb15ed6753b8462e60a06d"}
-        babashka/neil {:git/url "https://github.com/babashka/neil.git"
-                       :sha "6fc58cc6a4253c2c15f05135f1610ab3d46d961f"}
         version-clj/version-clj {:mvn/version "2.0.2"}}
  :tasks {;; setup
          :requires ([babashka.fs :as fs]
@@ -13,31 +11,42 @@
 
          ;; tasks
          clean
-         {:doc "clean build work"
-          :task (when (fs/exists? "target")
-                  (fs/delete-tree "target"))}
+         {:doc "Delete any work/cache dirs"
+          :task (doseq [dir ["target" ".cpcache"]]
+                  (if (fs/exists? dir)
+                    (do
+                      (status/line :detail "Deleting: %s" dir)
+                      (fs/delete-tree dir))
+                    (status/line :detail "Does not exist: %s" dir)))}
          download-deps
-         {:doc "bring down Clojure deps"
+         {:doc "Bring down all the clojure deps"
           :task download-deps/-main}
-         compile-java
-         {:doc "compile java sources"
-          :task (clojure "-T:build compile-java")}
-         test
-         {:doc "run tests"
-          :task (do
-                  (when (not (fs/exists? "target/classes"))
-                    (run 'compile-java))
-                  (clojure "-M:test"))}
+         test:jvm
+         {:doc "Runs tests under JVM Clojure [--clj-version] (recognizes cognitect test-runner args)"
+          :task test-jvm/-main}
+         test:bb
+         {:doc "Runs tests under babashka Clojure (recognizes cognitect test-runner args)"
+          :extra-paths ["src" "test" "test-resources"]
+          :extra-deps {io.github.cognitect-labs/test-runner
+                       {:git/tag "v0.5.1" :git/sha "dfb30dd"}
+                       org.clojure/tools.namespace {:git/url "https://github.com/babashka/tools.namespace"
+                                                    :git/sha "16b8c53174a5c9d89d6e0ce4128aa30b071aabdf"}}
+          :requires ([cognitect.test-runner :as tr])
+          :task (apply tr/-main *command-line-args*)}
+         lint
+         {:doc "[--rebuild] Lint source code"
+          :task lint/-main}
          pubcheck
          {:doc "run only publish checks (without publishing)"
           :task publish/pubcheck}
          publish
-         {:doc "Publish a release (for maintainers)"
-          :task publish/-main}
+         {:doc "Trigger a release to clojars"
+          :task (publish/-main)}
          neil ;; let's not rely on a random version of neil
          {:doc "Pinned version of babashka/neil (used in scripting)"
+          :extra-deps {babashka/neil {:git/url "https://github.com/babashka/neil.git"
+                       :sha "6fc58cc6a4253c2c15f05135f1610ab3d46d961f"}}
           :task babashka.neil/-main}
-
          ;; hidden tasks, no need for folks to be trying these ci invoked tasks
          -ci-clojars-deploy
          {:doc "triggered on ci by release tag"

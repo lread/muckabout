@@ -1,0 +1,106 @@
+= Developer Guide
+
+== Contributing
+
+We very much appreciate contributions from the community.
+
+=== Issue First Please
+
+If you have an idea or a fix, please do raise a GitHub issue before investing in any coding effort. That way we can discuss first.
+Writing code is the easy part, maintaining it forever is the hard part.
+
+That said, if you notice a simple typo, a PR without an issue is fine.
+
+=== Submitting a Pull Request
+
+Please never force push on your PR, as this makes reviewing incremental changes impossible for us.
+When we merge your PR, we'll usually squash it, so that will clean up any rambling work in progress.
+
+== Environmental Overview
+
+=== Developer Prerequisites
+
+The current version of Babashka.
+
+* Our scripts use Babashka to launch Clojure, so you don't absolutely need the Clojure cli's `clojure` command.
+* JDK, see <<01-user-guide.adoc#supported-envs,supported environments>>
+
+=== Babashka Compatibility
+
+Clj-http-lite is babashka compatible.
+
+Babashka supports everything that clj-http-lite needs, but when making changes, be aware that your code must also work under Babashka.
+
+If your change requires something Babashka does not currently support, we can bring it up with the babashka team, things like adding a class are usually approved.
+
+== Docs
+
+All documentation is written in AsciiDoc.
+@lread likes to follow https://asciidoctor.org/docs/asciidoc-recommended-practices/#one-sentence-per-line[AsciiDoc best practice of one sentence per line] but won't be entirely pedantic about that.
+
+We host our docs on cljdoc.
+
+== Babashka Tasks
+
+We use Babashka tasks, to see all available tasks run:
+
+[source,shell]
+----
+bb tasks
+----
+
+=== Clojure JVM Tests
+
+Optionally:
+
+[source,shell]
+----
+$ bb clean
+$ bb deps
+----
+
+Run all Clojure tests against minimum supported version of Clojure (1.8):
+
+[source,shell]
+----
+$ bb test:jvm
+----
+
+Run tests against a specific Clojure version, for example 1.11
+
+[source,shell]
+----
+$ bb test:jvm --clj-version 1.11
+----
+
+You can also include cognitect test runner options:
+
+[source,shell]
+----
+$ bb test:jvm --clj-version 1.9 --namespace-regex '*.sanity.*'
+----
+
+=== Babashka Tests[bb-tests]
+
+To run the entire test suite under Babashka:
+
+[source,shell]
+----
+$ bb test:bb
+----
+
+You can also include cognitect test runner options:
+
+[source,shell]
+----
+$ bb test:bb --var clj-http.lite.integration-test/roundtrip
+----
+
+=== Linting
+
+Our CI workflow lints sources with clj-kondo, and you can too!
+
+[source,shell]
+----
+$ bb lint
+----

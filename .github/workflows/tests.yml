@@ -1,34 +1,73 @@
 name: tests
 on:
+  # allow this workflow to be called from other workflows, namely: publish
   workflow_call:
   push:
-    branches:
-      - main
+    branches: [ "master" ]
   pull_request:
+    branches: [ "master" ]
 
 jobs:
-  test:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.0.2
+
+      - name: Setup
+        uses: ./.github/workflows/shared-setup
+        with:
+          jdk: '11'
+
+      - name: Lint
+        run: bb lint
+
+  test-jvm:
     runs-on: ${{ matrix.os.name }}-latest
     strategy:
       fail-fast: false
       matrix:
         os: [{name: 'windows', shell: 'pwsh'}, {name: 'ubuntu', shell: 'bash'}]
+        clojure-version: ["1.8", "1.9", "1.10", "1.11"]
         jdk: ['8', '11', '17']
 
-    name: ${{matrix.os.name}} - jdk ${{ matrix.jdk }}
+    name: ${{ matrix.os }} clj-${{ matrix.clojure-version }} jdk${{ matrix.java-version }}
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Setup
-      uses: ./.github/workflows/shared-setup
-      with:
-        jdk: ${{ matrix.jdk }}
-        shell: ${{ matrix.os.shell }}
+      - name: Setup
+        uses: ./.github/workflows/shared-setup
+        with:
+          jdk: ${{ matrix.jdk }}
+          shell: ${{ matrix.os.shell }}
 
-    - name: Compile java
-      run: bb compile-java
+      - name: Compile java
+        run: bb compile-java
 
-    - name: Run tests
-      run: bb test
+      - name: Run tests
+        run: bb test:jvm --clj-version ${{ matrix.clojure-version }}
+
+  test-bb:
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [{name: 'windows', shell: 'pwsh'}, {name: 'ubuntu', shell: 'bash'}]
+
+    name: ${{ matrix.os }} bb
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.0.2
+
+      - name: Setup
+        uses: ./.github/workflows/shared-setup
+        with:
+          jdk: ${{ matrix.jdk }}
+          shell: ${{ matrix.os.shell }}
+
+      - name: Run tests
+        run: bb test:bb

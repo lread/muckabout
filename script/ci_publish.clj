@@ -7,7 +7,7 @@
             [lread.status-line :as status]
             [build-shared]))
 
-(def changelog-url "https://github.com/lread/muckabout/blob/main/CHANGELOG.adoc")
+(def changelog-url "https://github.com/clj-commons/clj-http-lite/blob/master/CHANGELOG.adoc")
 
 (defn- assert-on-ci []
   (when (not (System/getenv "CI"))
@@ -41,7 +41,7 @@
 (defn clojars-deploy []
   (assert-on-ci)
   (analyze-ci-tag) ;; fail on unexpected version tag
-  (t/shell "clojure -T:build deploy"))
+  (t/clojure "-T:build deploy"))
 
 (defn github-create-release []
   (assert-on-ci)

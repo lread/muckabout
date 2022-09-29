@@ -40,7 +40,7 @@ Then up on CI, the CI publish workflow is only triggered when it sees a release 
 . a GitHub release is created
 . cljdoc is informed of the new release
 
-TIP: you can run validations only via `bb pubchecks`
+TIP: you can run just the publish validations alone via `bb pubcheck`
 
 == Relevant Sources
 
@@ -63,4 +63,5 @@ Clojars secrets are protected under the `publish` environment which is only refe
 
 When publishing, you will see both the `tests` workflow triggered and the `publish` workflow triggered (which also invokes the `tests` workflow).
 
-This extra running of the `tests` workflow is GitHub Actions responding to changes committed as part of the publishing work. A bit annoying, but harmless.
+This extra running of the `tests` workflow is GitHub Actions responding to changes committed as part of the publishing work.
+A bit annoying, but harmless.

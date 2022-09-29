@@ -8,7 +8,7 @@
 
 ;; Note to lurkers: doc updates are geared to AsciiDoc files.
 
-(def github-coords "lread/muckabout")
+(def github-coords "clj-commons/clj-http-lite")
 (def changelog-fname "CHANGELOG.adoc")
 (def readme-fname "README.adoc")
 ;; this project started with "Release-" but we prefer "v" as a version tag prefix
@@ -40,11 +40,11 @@
         (keep parse-raw-tag)
         (most-recent-tag)))
 
-(defn- main-branch? []
+(defn- master-branch? []
   (let [current-branch (->> (t/shell {:out :string} "git rev-parse --abbrev-ref HEAD")
                             :out
                             string/trim)]
-    (= "main" current-branch)))
+    (= "master" current-branch)))
 
 (defn- uncommitted-code? []
   (-> (t/shell {:out :string}
@@ -65,7 +65,7 @@
   []
   (let [content (slurp changelog-fname)
         valid-attrs ["[minor breaking]" "[breaking]"]
-        [_ attr desc :as match] (re-find #"(?ims)^== Unreleased ?(.*?)$(.*?)(== v\d|\z)" content)]
+        [_ attr content :as match] (re-find #"(?ims)^== Unreleased ?(.*?)$(.*?)(== v\d|\z)" content)]
     (if (not match)
       [{:error :section-missing}]
       (cond-> []
@@ -74,15 +74,16 @@
              (not (contains? (set valid-attrs) attr)))
         (conj {:error :suffix-invalid :valid-attrs valid-attrs :found attr})
 
-        (string/blank? desc)
+        ;; without any words of a reasonable min length, we consider section blank
+        (not (re-find #"(?m)[\p{L}]{3,}" content))
         (conj {:error :content-missing})))))
 
 (defn- release-checks []
   (let [changelog-findings (reduce (fn [acc n] (assoc acc (:error n) n))
                                    {}
                                    (analyze-changelog))]
-    [{:check "on main branch"
-      :result (if (main-branch?) :pass :fail)}
+    [{:check "on master branch"
+      :result (if (master-branch?) :pass :fail)}
      {:check "no uncommitted code"
       :result (if (uncommitted-code?) :fail :pass)}
      {:check "no unpushed commits"
@@ -207,29 +208,9 @@
     (status/line :head "Remote work")
     (status/line :detail "The remainging work will be triggered by the release tag on CI:")
     (status/line :detail "- Publish a release jar to clojars")
-    (status/line :detail "- Creating a GitHub release")))
+    (status/line :detail "- Create a GitHub release")
+    (status/line :detail "- Inform cljdoc of release")))
 
 ;; default action when executing file directly
 (when (= *file* (System/getProperty "babashka.file"))
   (apply -main *command-line-args*))
-
-(comment
-
-  (parse-raw-tag "boo refs/tags/Release-1.8")
-  ;; => {:tag "Release-1.8", :version "1.8"}
-
-  (parse-raw-tag "boo refs/tags/v1.8")
-  ;; => {:tag "v1.8", :version "1.8"}
-
-  (parse-raw-tag "boo refs/tags/1.8")
-  ;; => nil
-
-  (parse-raw-tag "boo refs/tags/nope")
-  ;; => nil
-
-  (most-recent-tag [{:tag "a" :version "0.0.2"}
-                    {:tag "b" :version "7.8.9"}
-                    {:tag "c" :version "0.0.4"}
-                    {:tag "d" :version "1.2.3"}])
-  ;; => "b"
-)
