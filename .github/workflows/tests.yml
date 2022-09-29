@@ -48,7 +48,7 @@ jobs:
         run: bb test:jvm --clj-version ${{ matrix.clojure-version }}
 
   test-bb:
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os.name }}-latest
     strategy:
       fail-fast: false
       matrix:
