@@ -18,6 +18,3 @@
     (doseq [a aliases]
       (status/line :detail "Bring down deps for alias: %s" a)
       (t/clojure "-P" (str "-M" a)))))
-
-(when (= *file* (System/getProperty "babashka.file"))
-  (apply -main *command-line-args*))

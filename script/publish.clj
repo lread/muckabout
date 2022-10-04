@@ -8,8 +8,7 @@
 
 ;; Note to lurkers: doc updates are geared to AsciiDoc files.
 
-(def github-coords "lread/muckabout"
-  #_ "clj-commons/clj-http-lite")
+(def github-coords "clj-commons/clj-yaml")
 (def changelog-fname "CHANGELOG.adoc")
 (def user-guide-fname "doc/01-user-guide.adoc")
 ;; this project started with "Release-" but we prefer "v" as a version tag prefix
@@ -215,3 +214,24 @@
 ;; default action when executing file directly
 (when (= *file* (System/getProperty "babashka.file"))
   (apply -main *command-line-args*))
+
+(comment
+
+  (parse-raw-tag "boo refs/tags/Release-1.8")
+  ;; => {:tag "Release-1.8", :version "1.8"}
+
+  (parse-raw-tag "boo refs/tags/v1.8")
+  ;; => {:tag "v1.8", :version "1.8"}
+
+  (parse-raw-tag "boo refs/tags/1.8")
+  ;; => nil
+
+  (parse-raw-tag "boo refs/tags/nope")
+  ;; => nil
+
+  (most-recent-tag [{:tag "a" :version "0.0.2"}
+                    {:tag "b" :version "7.8.9"}
+                    {:tag "c" :version "0.0.4"}
+                    {:tag "d" :version "1.2.3"}])
+  ;; => "b"
+)

@@ -1,4 +1,9 @@
 = Developer Guide
+:toclevels: 5
+:toc:
+
+== Audience
+You want contribute to, or learn about, the development of the clj-yaml library.
 
 == Contributing
 
@@ -6,7 +11,8 @@ We very much appreciate contributions from the community.
 
 === Issue First Please
 
-If you have an idea or a fix, please do raise a GitHub issue before investing in any coding effort. That way we can discuss first.
+If you have an idea or a fix, please do raise a GitHub issue before investing in any coding effort.
+That way we can discuss first.
 Writing code is the easy part, maintaining it forever is the hard part.
 
 That said, if you notice a simple typo, a PR without an issue is fine.
@@ -21,17 +27,15 @@ When we merge your PR, we'll usually squash it, so that will clean up any rambli
 === Developer Prerequisites
 
 The current version of Babashka.
+The current version of Clojure.
+JDK8+
+Some knowledge of Java if you are going to add/modify Java code (there's not much!).
 
-* Our scripts use Babashka to launch Clojure, so you don't absolutely need the Clojure cli's `clojure` command.
-* JDK, see <<01-user-guide.adoc#supported-envs,supported environments>>
+=== Babashka Built-in
 
-=== Babashka Compatibility
+Clj-yaml is built into babashka.
 
-Clj-http-lite is babashka compatible.
-
-Babashka supports everything that clj-http-lite needs, but when making changes, be aware that your code must also work under Babashka.
-
-If your change requires something Babashka does not currently support, we can bring it up with the babashka team, things like adding a class are usually approved.
+Any changes we make to clj-yaml will take this fact into consideration.
 
 == Docs
 
@@ -39,6 +43,16 @@ All documentation is written in AsciiDoc.
 @lread likes to follow https://asciidoctor.org/docs/asciidoc-recommended-practices/#one-sentence-per-line[AsciiDoc best practice of one sentence per line] but won't be entirely pedantic about that.
 
 We host our docs on cljdoc.
+
+== The Public API
+
+Like many other libraries, clj-yaml did not clearly distinguish its public API from its implementation details.
+
+A library with an explicitly defined public API reduces the surface area of what we need to be careful not to break and gives us the freedom to change what is clearly internal.
+
+Because users of clj-yaml have made full use of the `clj-yaml.core` namespace, we continue to support it.
+
+But moving forward, we will be very careful not to expose what we feel are implementation details.
 
 == Babashka Tasks
 
@@ -49,54 +63,36 @@ We use Babashka tasks, to see all available tasks run:
 bb tasks
 ----
 
-=== Clojure JVM Tests
-
 Optionally:
 
 [source,shell]
 ----
 $ bb clean
-$ bb deps
+$ bb download-deps
+$ bb compile-java
 ----
 
-Run all Clojure tests against minimum supported version of Clojure (1.8):
-
-[source,shell]
-----
-$ bb test:jvm
-----
-
-Run tests against a specific Clojure version, for example 1.11
+Run all Clojure tests
 
 [source,shell]
 ----
-$ bb test:jvm --clj-version 1.11
+$ bb test
 ----
 
 You can also include cognitect test runner options:
 
 [source,shell]
 ----
-$ bb test:jvm --clj-version 1.9 --namespace-regex '*.sanity.*'
+$ bb test --var 'clj-yaml.core-test/emoji-can-be-parsed'
 ----
 
-=== Babashka Tests[bb-tests]
-
-To run the entire test suite under Babashka:
+...and/or Clojure version:
 
 [source,shell]
 ----
-$ bb test:bb
+$ bb test --clj-version 1.9
 ----
-
-You can also include cognitect test runner options:
-
-[source,shell]
-----
-$ bb test:bb --var clj-http.lite.integration-test/roundtrip
-----
-
-=== Linting
+(defaults to `1.8`, specify `:all` to test against all supported Clojure versions)
 
 Our CI workflow lints sources with clj-kondo, and you can too!
 

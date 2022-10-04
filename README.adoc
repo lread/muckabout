@@ -1,71 +1,39 @@
-= `clj-http-lite`
-:project-src-coords: clj-commons/clj-http-lite
-:project-mvn-coords: org.clj-commons/clj-http-lite
-:url-doc: https://cljdoc.org/d/{project-mvn-coords}
+= `clj-commons/clj-yaml`
+:project-coords: clj-commons/clj-yaml
+
+Provides http://yaml.org[YAML] encoding and decoding for Clojure via the https://bitbucket.org/snakeyaml/snakeyaml[SnakeYAML] Java library.
 
 // Badges
-link:{url-doc}[image:https://cljdoc.org/badge/{project-mvn-coords}[Cljdoc]] 
-https://github.com/{project-src-coords}/actions/workflows/ci.yml[image:https://github.com/{project-src-coords}/workflows/Tests/badge.svg[GitHub Actions tests]]
-https://clojars.org/{project-mvn-coords}[image:https://img.shields.io/clojars/v/{project-mvn-coords}.svg[Clojars]]
-https://babashka.org[image:https://raw.githubusercontent.com/babashka/babashka/master/logo/badge.svg[bb compatible]]
-https://clojurians.slack.com/archives/C03UZ1Y8414[image:https://img.shields.io/badge/slack-join_chat-brightgreen.svg[Join chat]]
+https://clojars.org/{project-coords}[image:https://img.shields.io/clojars/v/{project-coords}.svg[Clojars Project]] 
+https://cljdoc.org/d/{project-coords}[image:https://cljdoc.org/badge/{project-coords}[cljdoc badge]]
+https://github.com/{project-coords}/actions/workflows/tests.yml[image:https://github.com/{project-coords}/actions/workflows/tests.yml/badge.svg[CI tests]]
+https://babashka.org[image:https://raw.githubusercontent.com/babashka/babashka/master/logo/built-in-badge.svg[bb built-in]]
+https://clojurians.slack.com/archives/C042XAQFCCU[image:https://img.shields.io/badge/slack-join_chat-brightgreen.svg[Slack chat]]
 
-A Clojure HTTP library similar to http://github.com/dakrone/clj-http[clj-http], but more lightweight.
-Compatible with Babashka and GraalVM.
-____
-This is a clj-commons maintained fork of the archived https://github.com/hiredman/clj-http-lite[`hiredman/clj-http-lite`] repo.
-____
+(This is a maintained fork of https://github.com/CircleCI-Archived/clj-yaml[the circleci clj-yaml fork] which forked from https://github.com/lancepantz/clj-yaml[the original clj-yaml])
 
 == Documentation
 
 * link:doc/01-user-guide.adoc[User Guide]
 * link:doc/02-developer-guide.adoc[Developer Guide]
-
-== Used In...
-Some project using clj-http-lite are:
-
-* https://github.com/clj-holmes/clj-holmes[clj-holmes] - Static application security tool for finding vulnerable Clojure code
-* https://cljdoc.org/[cljdoc site] (https://github.com/cljdoc/cljdoc[sources]) - A central documentation hub for the Clojure community
-* https://github.com/clj-commons/etaoin[Etaoin] - Pure Clojure WebDriver protocol implementation
-* https://github.com/djblue/portal[portal] (for tests)  - A clojure tool to navigate through your data
-* https://github.com/sethtrain/raven-clj[raven-clj] - A Clojure interface to Sentry
-* https://github.com/epiccastle/spire[spire] - pragmatic provisioning using Clojure
-
-Don't see your project listed? Let us know, we'll be happy to include it!
+* link:doc/03-maintainer-guide.adoc[Maintainer Guide]
 
 == People
 
 === Contributors
-
-A big thank you to al the people who have contributed directly to clj-http-lite!
-
-* https://github.com/katox[@katox]
-* https://github.com/sattvik[@sattvik]
-* https://github.com/AdamClements[@AdamClements]
-* https://github.com/ivarref[@ivarref]
-* https://github.com/imrekoszo[@imrekoszo]
-* https://github.com/avichalp[@avichalp] 
-* https://github.com/arnaudbos[@arnaudbos]
-* https://github.com/gaberger[@gaberger]
-* https://github.com/vemv[@vemv]
-* https://github.com/deas[@deas]
-* https://github.com/anderseknert[@anderseknert]
-* https://github.com/mokshasoft[@mokshasoft]
-
-Don't see your name? Our apologies! Let us know and we'll add you in.
+A huge thank you to https://github.com/clj-commons/clj-yaml/graphs/contributors[all the people who have contributed directly to clj-yaml]!
 
 === Founders
 
-* https://github.com/dakrone[@dakrone] - the creator of clj-http
-* https://github.com/hiredman[@hiredman] - the creator of clj-http-lite
-* https://github.com/martinklepsch[@martinklepsch] - maintainer of clj-http-lite
+* https://github.com/lancepantz[@lancepantz] - the creator or clj-yaml
+* https://github.com/marcomorain[@marcomorain] - the holder of the torch for the CircleCI fork
 
 === Current Active Maintainers
 
-* https://github.com/lread[@lread]
 * https://github.com/borkdude[@borkdude]
+* https://github.com/lread[@lread]
 
 == License
-We respect the original license at time of forking from clj-http:
-
-Released under the MIT License: http://www.opensource.org/licenses/mit-license.php
+(c) Lance Bradley - Licensed under the same terms as Clojure itself.
+See link:LICENSE[LICENSE] file for details.
+Portions (c) Owain Lewis as marked.
