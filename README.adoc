@@ -22,3 +22,7 @@ By default the pull_request triggers on the following activities:
 - reopened
 
 What if we remove synchronize? Would that do the trick?
+
+It seems to for local branch PR.
+I no longer see the duplicate trigger on the PR checks:
+Only 1 for push, no longer any for synchronize.
