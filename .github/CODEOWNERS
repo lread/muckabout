@@ -1,3 +1,0 @@
-# Code owners are auto-invited to review PRs including files matching specified pattern(s).
-# We opt out of this by only matching the CODEOWNERS file itself.
-.github/CODEOWNERS @marcomorain @slipset @borkdude @lread
