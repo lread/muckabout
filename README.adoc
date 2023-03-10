@@ -7,6 +7,8 @@ This should be the case for:
 * push to branch on this repo
 * push to fork of this repo
 * push to PR of this repo
+** from local branch
+** from fork
 
 Currently GHA is building twice on push to PR.
 Once for PR and once for push.
