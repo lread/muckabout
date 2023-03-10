@@ -3,7 +3,7 @@
 Goal: Always run tests once for pushed commit(s).
 
 This should be the case for:
-* push to master on this repo [should be good]
+* push to master on this repo [good]
 * push to branch on this repo [good]
 * push to fork of this repo
 * push to PR of this repo
