@@ -1,5 +1,6 @@
 = Testing 123 - GHA triggers
 
+== Commit Triggers
 Goal: Always run tests once for pushed commit(s).
 
 This should be the case for:
@@ -27,3 +28,35 @@ What if we remove synchronize? Would that do the trick?
 It seems to for local branch PR.
 I no longer see the duplicate trigger on the PR checks:
 Only 1 for push, no longer any for synchronize.
+
+== Tag triggers
+Releasing on a git version tag is the strong preference of some folks I work with.
+I find it much more complex to setup, and there is much more to think about, than triggering from the GitHub UI, but I try to keep an open mind.
+
+Github docs on push trigger:
+> Runs your workflow when you push a commit or tag.
+
+What we want:
+
+When a new tag is pushed to the master repo, initiate a release flow which is:
+
+* run tests
+* then publishes a release
+
+Scenario 1: a user from a fork synch with upstream, this pushes a tag
+This should not trigger a release workflow.
+
+Scenario 2: the Github push trigger recognizes the tag as a trigger then also a commit as a trigger, this triggers tests to be run twice when a tag is pushed.
+Can we say: never run tests on a tag
+But invoke tests from release flow that was triggered by a tag.
+
+So maybe this would to the trick to not invoke tests on new tag:
+`on: push: tags_ignore: "*"` for test workflow
+
+For not invoking release workflow from a fork...
+I do not see anything at the workflow level, so the workflow would run...
+But we might be able to skip all jobs via the following on each job in the publish/release workflow:
+[source,yaml]
+----
+if: github.repository_owner == 'clj-commons'
+----
