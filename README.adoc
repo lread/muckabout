@@ -1,0 +1,28 @@
+= Testing 123 - GHA triggers
+
+Goal: Always run tests once for pushed commit(s).
+
+This should be the case for:
+* push to master on this repo
+* push to branch on this repo
+* push to fork of this repo
+* push to PR of this repo
+** from local branch
+** from fork
+
+Currently GHA is building twice on push to PR.
+Once for PR and once for push.
+
+I'd like to avoid this waste of compute.
+Also, it is confusing.
+
+By default the pull_request triggers on the following activities:
+- opened
+- synchronize
+- reopened
+
+What if we remove synchronize? Would that do the trick?
+
+It seems to for local branch PR.
+I no longer see the duplicate trigger on the PR checks:
+Only 1 for push, no longer any for synchronize.
