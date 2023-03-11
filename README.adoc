@@ -116,3 +116,5 @@ So, maybe explicitly allowing tests to run from workflow_call might work.
 I'll try that.
 
 Not working, need to debug
+
+Ok, the event_name is push, when I tought it would be workflow_call, so I'm probably not understanding something about workflow calls. Lean on github.ref instead.
