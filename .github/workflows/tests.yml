@@ -2,8 +2,8 @@ name: tests
 on:
   workflow_call: # to allow call from publish
   push:
-    tags-ignore:
-      - "*" # only publish flow triggers on tags
+    tags:
+      - "!**" # only publish flow triggers on tags
   pull_request:
     # default is synchronized, opened, reopened, remove synchronized to avoid
     # double triggering on PRs commits (push is enough)
