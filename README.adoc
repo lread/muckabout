@@ -98,10 +98,13 @@ publish: apply version 1.2.23
 So maybe something like:
 [source,yaml]
 ----
-if: ${{ !startsWith(github.event.head_commit.message, 'publish: ') }}
+if: ${{ !startsWith(github.event.head_commit.message, 'publish:') }}
 ----
 
 The test flow will still be run but the jobs would be skipped.
 I think this would work. Maybe.
 We still want the tests triggered from the publish flow.
 I'll play with this.
+
+Note I orginally had `'publish: '` with a trailing space, but that triggered an error.
+Don't know if that's a yaml thing or a github actions thing.
