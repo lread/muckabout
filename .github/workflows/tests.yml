@@ -16,7 +16,7 @@ on:
 jobs:
   test:
     # the publish flow commits version changes, we don't want that, on its own, to trigger a test run
-    if: ${{ !startsWith(github.event.head_commit.message, 'publish: ') }}
+    if: ${{ !startsWith(github.event.head_commit.message, 'publish:') }}
     runs-on: ubuntu-latest
 
     steps:
