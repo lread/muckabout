@@ -112,5 +112,5 @@ Don't know if that's a yaml thing or a github actions thing.
 Ok that did not work. The head commit message is the same after a tag, so...
 the tests invoked by publish are skipped and so the publish is skipped.
 
-So...  maybe explicitly allowing tests to run from workflow_call might work.
+So, maybe explicitly allowing tests to run from workflow_call might work.
 I'll try that.
