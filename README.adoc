@@ -53,6 +53,19 @@ But invoke tests from release flow that was triggered by a tag.
 So maybe this would to the trick to not invoke tests on new tag:
 `on: push: tags_ignore: "*"` for test workflow
 
+In practice I found
+[source,yaml]
+----
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "!**"
+----
+To be an incantation that works.
+Apparently the default is "**" for branches and tags, but if you override one, you need to respecify the other.
+
 For not invoking release workflow from a fork...
 I do not see anything at the workflow level, so the workflow would run...
 But we might be able to skip all jobs via the following on each job in the publish/release workflow:
