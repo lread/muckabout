@@ -114,3 +114,5 @@ the tests invoked by publish are skipped and so the publish is skipped.
 
 So, maybe explicitly allowing tests to run from workflow_call might work.
 I'll try that.
+
+Not working, need to debug
