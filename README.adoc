@@ -108,3 +108,9 @@ I'll play with this.
 
 Note I orginally had `'publish: '` with a trailing space, but that triggered an error.
 Don't know if that's a yaml thing or a github actions thing.
+
+Ok that did not work. The head commit message is the same after a tag, so...
+the tests invoked by publish are skipped and so the publish is skipped.
+
+So...  maybe explicitly allowing tests to run from workflow_call might work.
+I'll try that.
