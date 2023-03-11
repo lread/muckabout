@@ -73,3 +73,35 @@ But we might be able to skip all jobs via the following on each job in the publi
 ----
 if: github.repository_owner == 'clj-commons'
 ----
+
+== On Release we have a commit and a tag
+In a tag triggered release flow, we'll push
+- a commit that updates some files to the new version, and we'll have our
+- our tag
+
+GitHub Actions will see these as 2 separate triggers, even if we try to push atomically.
+For my current setup, this means that my tests will be invoked twice.
+Once for the commit push.
+Once by publish which invokes tests.
+
+Sooo... can we skip tests for a release commit push?
+Not at the workflow level.
+But we could do something at the job level.
+We could check the commit message content.
+For example on pomegranate, the publish workflow commit message looks like this:
+
+[source,]
+----
+publish: apply version 1.2.23
+----
+
+So maybe something like:
+[source,yaml]
+----
+if: ${{ !startsWith(github.event.head_commit.message, 'publish: ') }}
+----
+
+The test flow will still be run but the jobs would be skipped.
+I think this would work. Maybe.
+We still want the tests triggered from the publish flow.
+I'll play with this.
