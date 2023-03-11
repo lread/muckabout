@@ -2,6 +2,8 @@ name: tests
 on:
   workflow_call: # to allow call from publish
   push:
+    branches:
+      - "**"
     tags:
       - "!**" # only publish flow triggers on tags
   pull_request:
