@@ -29,3 +29,4 @@ jobs:
         echo "event name: ${{ github.event_name }}"
         echo "commit message: ${{ github.event.head_commit.message }}"
         echo "ref name: ${{ github.ref_name }}"
+        echo "ref: ${{ github.ref }}"
