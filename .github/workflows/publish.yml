@@ -6,9 +6,11 @@ on:
 
 jobs:
   test:
+    if: ${{ github.repository_owner == 'lread' }}
     uses: ./.github/workflows/tests.yml
 
   publish:
+    if: ${{ github.repository_owner == 'lread' }}
     runs-on: ubuntu-latest
     needs: [test]
 
