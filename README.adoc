@@ -18,7 +18,7 @@ Once for PR and once for push.
 I'd like to avoid this waste of compute.
 Also, it is confusing.
 
-By default the pull_request triggers on the following activities:
+By default, the pull_request triggers on the following activities:
 - opened
 - synchronize
 - reopened
